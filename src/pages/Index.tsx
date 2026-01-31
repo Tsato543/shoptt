@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import SellerInfo from "@/components/SellerInfo";
 import ProductTabs from "@/components/ProductTabs";
@@ -129,6 +130,7 @@ const products: Product[] = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
   const [showCoupon, setShowCoupon] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [cartCount, setCartCount] = useState(0);
@@ -150,7 +152,11 @@ const Index = () => {
   };
 
   const handleBuy = (product: Product) => {
-    console.log("Comprar:", product.name);
+    if (product.id === "mounjaro") {
+      navigate("/produto/mounjaro");
+    } else {
+      console.log("Comprar:", product.name);
+    }
   };
 
   return (
