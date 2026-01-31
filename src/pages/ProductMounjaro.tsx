@@ -79,7 +79,7 @@ const ProductMounjaro = () => {
   };
 
   const handleBuyNow = () => {
-    console.log("Comprar agora: Mounjaro");
+    navigate("/carrinho");
   };
 
   const formatTime = (n: number) => String(n).padStart(2, "0");
