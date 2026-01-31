@@ -26,9 +26,9 @@ const ProductMounjaro = () => {
   const trackRef = useRef<HTMLDivElement>(null);
 
   const images = [
-    { src: foto1, alt: "Mounjaro™️ 2,5 mg — Caneta injetável" },
+    { src: foto1, alt: "Mounjaro™️ 5 mg — Caneta injetável" },
     { src: foto2, alt: "Embalagem do Mounjaro™️" },
-    { src: foto3, alt: "Tirzepatida 2,5 mg — Detalhes do produto" },
+    { src: foto3, alt: "Tirzepatida 5 mg — Detalhes do produto" },
   ];
 
   // Countdown timer
@@ -85,7 +85,7 @@ const ProductMounjaro = () => {
   const formatTime = (n: number) => String(n).padStart(2, "0");
 
   const relatedProducts = [
-    { id: "mounjaro", name: "Mounjaro™️ 2,5 mg – Tirzepatida", price: 67.90, oldPrice: 1789.87, sold: 2540, image: prod1Img },
+    { id: "mounjaro", name: "Mounjaro™️ 5 mg – Tirzepatida", price: 67.90, oldPrice: 1789.87, sold: 2540, image: prod1Img },
     { id: "smarttv43", name: "Smart TV Samsung 43\" Crystal UHD 4K", price: 2408.61, oldPrice: 2589.90, sold: 2224, image: prod2Img },
     { id: "pcgamer", name: "PC Gamer Pichau i5-12400F RTX 4060", price: 3899.90, oldPrice: 4599.90, sold: 856, image: prod3Img },
     { id: "caixadesom4", name: "Caixa de Som Boombox Plus AIWA 200W", price: 87.30, oldPrice: 2379.90, sold: 4549, image: prod4Img },
@@ -228,7 +228,7 @@ const ProductMounjaro = () => {
                 11.11
               </span>
               <h1 className="text-[15px] font-semibold text-foreground leading-snug">
-                Mounjaro™️ 2,5 mg – Tirzepatida (caneta injetável)
+                Mounjaro™️ 5 mg – Tirzepatida (caneta injetável)
               </h1>
             </div>
             <button className="p-1 rounded hover:bg-muted" aria-label="Salvar">
@@ -392,9 +392,9 @@ const ProductMounjaro = () => {
             <div className="text-[12px] font-semibold text-foreground">Detalhes</div>
             <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-2 text-[13px]">
               <div className="text-muted-foreground">Produto</div>
-              <div className="text-foreground">Mounjaro™️ 2,5 mg – Tirzepatida</div>
+              <div className="text-foreground">Mounjaro™️ 5 mg – Tirzepatida</div>
               <div className="text-muted-foreground">Princípio Ativo</div>
-              <div className="text-foreground">Tirzepatida 2,5 mg</div>
+              <div className="text-foreground">Tirzepatida 5 mg</div>
               <div className="text-muted-foreground">Indicação</div>
               <div className="text-foreground">Diabetes tipo 2</div>
               <div className="text-muted-foreground">Apresentação</div>
