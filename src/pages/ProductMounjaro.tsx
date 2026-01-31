@@ -409,10 +409,10 @@ const ProductMounjaro = () => {
           <div>
             <div className="text-[12px] font-semibold text-foreground">Descrição do Produto</div>
             <p className="mt-2 text-[13px] text-foreground">
-              <b>Mounjaro™️ 2,5 mg – Tirzepatida (caneta injetável)</b>
+              <b>Mounjaro™️ 5 mg – Tirzepatida (caneta injetável)</b>
               <br /><br />
               Mounjaro™️ é um medicamento injetável de aplicação subcutânea que contém{" "}
-              <b>tirzepatida 2,5 mg</b>, indicado para o tratamento de adultos com{" "}
+              <b>tirzepatida 5 mg</b>, indicado para o tratamento de adultos com{" "}
               <b>diabetes tipo 2</b>, como adjuvante à dieta e exercícios físicos.
               <br /><br />
               A tirzepatida atua como um agonista duplo dos receptores <b>GIP e GLP-1</b>, hormônios
