@@ -2,10 +2,6 @@ import { XCircle, Info } from "lucide-react";
 import tiktokLogo from "@/assets/tiktok-shop.png";
 
 const Upsell4 = () => {
-  const handlePayment = () => {
-    window.location.href = "https://ambienteseguro.org.ua/c/2907df25b1";
-  };
-
   return (
     <div className="min-h-screen bg-secondary/30 flex flex-col">
       {/* Header TikTok */}
@@ -68,10 +64,17 @@ const Upsell4 = () => {
           </p>
         </div>
 
-        {/* Botão */}
+        {/* Botão Paradise One-Click */}
         <button
-          onClick={handlePayment}
-          className="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide"
+          className="paradise-upsell-btn w-full font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide"
+          style={{ backgroundColor: '#ff3870', color: '#ffffff' }}
+          data-offer-hash="upsell_6c2b550d052dd269"
+          data-modal-title="Finalize com PIX para garantir sua oferta!"
+          data-copy-button-text="Copiar Código PIX"
+          data-modal-bg="#ffffff"
+          data-modal-title-color="#1f2937"
+          data-modal-btn-color="#28a745"
+          data-modal-btn-text-color="#ffffff"
         >
           CONFIRMAR PAGAMENTO
         </button>
