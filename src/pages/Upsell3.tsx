@@ -1,10 +1,6 @@
 import { Check, AlertTriangle, X, CreditCard } from "lucide-react";
 
 const Upsell3 = () => {
-  const handlePayment = () => {
-    window.location.href = "https://ambienteseguro.org.ua/c/2907df25b1";
-  };
-
   return (
     <div className="min-h-screen bg-secondary/30 flex flex-col items-center p-4 pt-8">
       <div className="w-full max-w-md space-y-4">
@@ -47,8 +43,15 @@ const Upsell3 = () => {
           </p>
           
           <button
-            onClick={handlePayment}
-            className="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide flex items-center justify-center gap-2 mb-4"
+            className="paradise-upsell-btn w-full font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide flex items-center justify-center gap-2 mb-4"
+            style={{ backgroundColor: '#ff3870', color: '#ffffff' }}
+            data-offer-hash="upsell_ad1e0deb66e1d9b4"
+            data-modal-title="Finalize com PIX para garantir sua oferta!"
+            data-copy-button-text="Copiar Código PIX"
+            data-modal-bg="#ffffff"
+            data-modal-title-color="#1f2937"
+            data-modal-btn-color="#28a745"
+            data-modal-btn-text-color="#ffffff"
           >
             <CreditCard className="w-5 h-5" />
             PAGAR FRETE
