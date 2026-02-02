@@ -152,21 +152,25 @@ const ProductMounjaro = () => {
             {currentSlide + 1}/{images.length}
           </div>
 
-          {/* Desktop arrows */}
-          <button
-            onClick={() => scrollTo(Math.max(0, currentSlide - 1))}
-            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/40 text-white"
-            aria-label="Anterior"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => scrollTo(Math.min(images.length - 1, currentSlide + 1))}
-            className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/40 text-white"
-            aria-label="Próximo"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+          {/* Navigation arrows */}
+          {currentSlide > 0 && (
+            <button
+              onClick={() => scrollTo(currentSlide - 1)}
+              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 active:scale-95 transition shadow-lg"
+              aria-label="Anterior"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+          )}
+          {currentSlide < images.length - 1 && (
+            <button
+              onClick={() => scrollTo(currentSlide + 1)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 active:scale-95 transition shadow-lg"
+              aria-label="Próximo"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          )}
         </section>
 
         {/* Flash Price */}
