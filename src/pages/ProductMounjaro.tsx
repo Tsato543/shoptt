@@ -13,12 +13,6 @@ import storeImg from "@/assets/store.png";
 import chatImg from "@/assets/chat.png";
 import setaImg from "@/assets/seta.png";
 
-// Related products
-import prod1Img from "@/assets/prod1.png";
-import prod2Img from "@/assets/prod2.png";
-import prod3Img from "@/assets/prod3.png";
-import prod4Img from "@/assets/prod4.png";
-
 const ProductMounjaro = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -84,12 +78,6 @@ const ProductMounjaro = () => {
 
   const formatTime = (n: number) => String(n).padStart(2, "0");
 
-  const relatedProducts = [
-    { id: "mounjaro", name: "Mounjaro™️ 5 mg – Tirzepatida", price: 67.90, oldPrice: 1789.87, sold: 2540, image: prod1Img },
-    { id: "smarttv43", name: "Smart TV Samsung 43\" Crystal UHD 4K", price: 2408.61, oldPrice: 2589.90, sold: 2224, image: prod2Img },
-    { id: "pcgamer", name: "PC Gamer Pichau i5-12400F RTX 4060", price: 3899.90, oldPrice: 4599.90, sold: 856, image: prod3Img },
-    { id: "caixadesom4", name: "Caixa de Som Boombox Plus AIWA 200W", price: 87.30, oldPrice: 2379.90, sold: 4549, image: prod4Img },
-  ];
 
   const reviews = [
     { name: "Carlos Silva", rating: 5, text: "Excelente medicamento!! O mounjaro ajudou mt no controle da minha diabetes tipo 2. A aplicação semanal é prática e os resultados nos exames de sangue foram surpreendentes. Recomendo p quem precisa controlar a glicose." },
@@ -421,54 +409,6 @@ const ProductMounjaro = () => {
           </div>
         </section>
 
-        <div className="h-2 bg-muted" />
-
-        {/* Recommended */}
-        <section className="bg-muted px-3 pt-3 pb-4">
-          <h2 className="text-[18px] font-semibold text-foreground mb-3">
-            Você também pode gostar
-          </h2>
-          <div className="grid grid-cols-2 gap-3">
-            {relatedProducts.map((p) => (
-              <div
-                key={p.id}
-                onClick={() => navigate(`/produto/${p.id}`)}
-                className="block rounded-2xl bg-background border border-border shadow-sm overflow-hidden cursor-pointer"
-              >
-                <div className="aspect-[4/3] bg-white">
-                  <img src={p.image} alt={p.name} className="w-full h-full object-contain p-2" />
-                </div>
-                <div className="p-2.5">
-                  <p className="text-[13px] text-foreground leading-snug line-clamp-2 min-h-[34px]">
-                    {p.name}
-                  </p>
-                  <div className="mt-1 flex items-baseline gap-2">
-                    <div className="text-primary font-bold text-[16px]">
-                      R$ {p.price.toFixed(2).replace(".", ",")}
-                    </div>
-                    <span className="inline-flex h-5 px-1.5 rounded bg-sale text-white text-[11px] font-bold leading-none items-center">
-                      11.11
-                    </span>
-                  </div>
-                  <div className="text-[12px] text-muted-foreground line-through">
-                    R$ {p.oldPrice.toFixed(2).replace(".", ",")}
-                  </div>
-                  <div className="mt-1 flex items-center gap-2 text-[11px]">
-                    <span className="inline-flex items-center px-1.5 py-[2px] rounded bg-accent text-accent-foreground font-bold">
-                      85% OFF
-                    </span>
-                    <span className="badge-shipping">Frete grátis</span>
-                  </div>
-                  <div className="mt-1.5 flex items-center gap-1.5 text-[12px] text-muted-foreground">
-                    <Star className="w-4 h-4 text-warning" fill="currentColor" />
-                    <span>4.6</span>
-                    <span>• {p.sold.toLocaleString("pt-BR")} vendidos</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
       </main>
 
       {/* Fixed Action Bar */}
