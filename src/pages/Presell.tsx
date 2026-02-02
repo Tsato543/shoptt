@@ -90,26 +90,15 @@ const Presell = () => {
         {step === "age" && (
           <div className="space-y-6">
             <h1 className="text-2xl font-extrabold text-foreground">Confirme sua idade</h1>
-            <select
+            <input
+              type="number"
+              placeholder="Digite sua idade"
               value={age}
               onChange={(e) => setAge(e.target.value)}
-              className="w-full px-5 py-4 text-lg border border-success rounded-xl bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-success/50 appearance-none cursor-pointer"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23666'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 9l4-4 4 4m0 6l-4 4-4-4'/%3E%3C/svg%3E")`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "right 1rem center",
-                backgroundSize: "1.5rem",
-              }}
-            >
-              <option value="" disabled>
-                Digite sua idade
-              </option>
-              {Array.from({ length: 83 }, (_, i) => i + 18).map((ageOption) => (
-                <option key={ageOption} value={ageOption}>
-                  {ageOption} anos
-                </option>
-              ))}
-            </select>
+              min="18"
+              max="100"
+              className="w-full px-5 py-4 text-lg border border-border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-success/50"
+            />
             <button
               onClick={handleContinue}
               disabled={!age}
