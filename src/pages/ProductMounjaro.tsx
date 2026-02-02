@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ShoppingCart, MoreHorizontal, ChevronRight, ChevronLeft, Bookmark, Star, Zap, Shield, Store, MessageCircle } from "lucide-react";
+import { ArrowLeft, ShoppingCart, MoreHorizontal, ChevronRight, ChevronLeft, Bookmark, Star, Zap, Shield } from "lucide-react";
+
+// Components
+import ReviewSection from "@/components/ReviewSection";
 
 // Images
 import foto1 from "@/assets/mounjaro/foto1.png";
@@ -12,7 +15,6 @@ import entregaImg from "@/assets/entrega.png";
 import storeImg from "@/assets/store.png";
 import chatImg from "@/assets/chat.png";
 import setaImg from "@/assets/seta.png";
-
 const ProductMounjaro = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -78,12 +80,6 @@ const ProductMounjaro = () => {
 
   const formatTime = (n: number) => String(n).padStart(2, "0");
 
-
-  const reviews = [
-    { name: "Carlos Silva", rating: 5, text: "Excelente medicamento!! O mounjaro ajudou mt no controle da minha diabetes tipo 2. A aplicação semanal é prática e os resultados nos exames de sangue foram surpreendentes. Recomendo p quem precisa controlar a glicose." },
-    { name: "Ana Santos", rating: 5, text: "Finalmente encontrei um tratamento q funciona!! O mounjaro não só controla a diabetes como tambem ajudou na perda de peso. A caneta é facil de usar e a dosagem semanal facilita mt o tratamento diario." },
-    { name: "João Pereira", rating: 4, text: "Medicamento revolucionario!! Alem de controlar perfeitamente a glicemia, o mounjaro ajudou a reduzir meu peso corporal. Os efeitos colaterais foram minimos e o resultado valeu cada centavo investido na saude." },
-  ];
 
   return (
     <div className="min-h-screen bg-background pb-[103px]">
@@ -290,47 +286,7 @@ const ProductMounjaro = () => {
         <div className="h-2 bg-muted" />
 
         {/* Reviews */}
-        <section className="bg-background px-3 py-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-[14px] font-semibold text-foreground">
-              Avaliações dos clientes <span className="text-muted-foreground font-normal">(3)</span>
-            </h2>
-            <button className="flex items-center gap-1 text-muted-foreground text-[12px]">
-              Ver mais
-              <ChevronRight className="w-4 h-4" strokeWidth={1.6} />
-            </button>
-          </div>
-
-          <div className="mt-1 flex items-center gap-2 text-[13px]">
-            <span className="font-semibold">4.9</span>
-            <span className="text-muted-foreground">/ 5</span>
-            <div className="flex items-center gap-0.5 ml-1">
-              {[1, 2, 3, 4].map((i) => (
-                <Star key={i} className="w-4 h-4 text-warning" fill="currentColor" />
-              ))}
-              <Star className="w-4 h-4 text-warning opacity-50" fill="currentColor" />
-            </div>
-          </div>
-
-          {reviews.map((review, idx) => (
-            <article key={idx} className="mt-3">
-              <div className="flex items-center gap-2">
-                <img
-                  src={`https://picsum.photos/200/200?random=${101 + idx}`}
-                  alt="avatar"
-                  className="w-6 h-6 rounded-full object-cover"
-                />
-                <div className="text-[13px] font-medium">{review.name}</div>
-              </div>
-              <div className="mt-1 text-warning text-[12px]">
-                {"★".repeat(review.rating)}
-                {"☆".repeat(5 - review.rating)}
-              </div>
-              <div className="text-[11px] text-muted-foreground">Compra Verificada</div>
-              <p className="mt-2 text-[13px] text-foreground line-clamp-3">{review.text}</p>
-            </article>
-          ))}
-        </section>
+        <ReviewSection />
 
         <div className="h-2 bg-muted" />
 
