@@ -246,7 +246,7 @@ const ProductMounjaro = () => {
                 <span className="px-2 py-[2px] rounded bg-success-light text-success font-semibold">
                   Frete grátis
                 </span>
-                <span className="text-foreground">Receba de 1 até 3 de fev</span>
+                <span className="text-foreground">Receba de 1 até 15 de fevereiro</span>
               </div>
               <div className="text-[12px] text-muted-foreground">
                 Taxa de envio: <span className="line-through">R$ 9,60</span>
