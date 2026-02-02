@@ -9,7 +9,7 @@ import ReviewSection from "@/components/ReviewSection";
 import foto1 from "@/assets/mounjaro/foto1.png";
 import foto2 from "@/assets/mounjaro/foto2.png";
 import foto3 from "@/assets/mounjaro/foto3.png";
-import logoImg from "@/assets/logo.png";
+import slimhealthLogo from "@/assets/slimhealth-logo.png";
 import ticketImg from "@/assets/ticket.png";
 import entregaImg from "@/assets/entrega.png";
 import storeImg from "@/assets/store.png";
@@ -295,13 +295,13 @@ const ProductMounjaro = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img
-                src={logoImg}
-                alt="Logo da loja"
+                src={slimhealthLogo}
+                alt="SlimHealth Logo"
                 className="w-10 h-10 rounded-full object-cover ring-1 ring-border bg-white"
               />
               <div className="leading-tight">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-bold text-[15px]">Atakarejo Oficial</span>
+                  <span className="font-bold text-[15px]">SlimHealth Oficial</span>
                   <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 48 48">
                     <polygon
                       fill="#42a5f5"
@@ -313,7 +313,7 @@ const ProductMounjaro = () => {
                     />
                   </svg>
                 </div>
-                <div className="text-xs text-muted-foreground">18.8K vendido(s)</div>
+                <div className="text-xs text-muted-foreground">427K vendido(s)</div>
               </div>
             </div>
 
