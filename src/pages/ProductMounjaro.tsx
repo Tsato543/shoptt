@@ -7,8 +7,9 @@ import ReviewSection from "@/components/ReviewSection";
 
 // Images
 import foto1 from "@/assets/mounjaro/foto1.png";
-import foto2 from "@/assets/mounjaro/foto2.png";
-import foto3 from "@/assets/mounjaro/foto3.png";
+import foto2 from "@/assets/mounjaro/foto2.webp";
+import foto3 from "@/assets/mounjaro/foto3.webp";
+import foto4 from "@/assets/mounjaro/foto4.jpg";
 import slimhealthLogo from "@/assets/slimhealth-logo.png";
 import ticketImg from "@/assets/ticket.png";
 import entregaImg from "@/assets/entrega.png";
@@ -23,8 +24,9 @@ const ProductMounjaro = () => {
 
   const images = [
     { src: foto1, alt: "Mounjaro™️ 5 mg — Caneta injetável" },
-    { src: foto2, alt: "Embalagem do Mounjaro™️" },
-    { src: foto3, alt: "Tirzepatida 5 mg — Detalhes do produto" },
+    { src: foto2, alt: "Embalagem do Mounjaro™️ com QR code" },
+    { src: foto3, alt: "Mounjaro™️ 5 mg — Vista lateral" },
+    { src: foto4, alt: "Mounjaro™️ 5 mg — Produto na mão" },
   ];
 
   // Countdown timer
