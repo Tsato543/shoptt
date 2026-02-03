@@ -21,6 +21,8 @@ serve(async (req) => {
   }
 
   try {
+    // OBS: Apesar do nome do secret, aqui estamos usando a *Secret Key* para autenticar via HEADER.
+    // Não devemos enviar a secret key dentro do JSON (campo public_key), pois a API valida tamanho.
     const PARADISE_PUBLIC_KEY = Deno.env.get('PARADISE_PUBLIC_KEY');
     if (!PARADISE_PUBLIC_KEY) {
       throw new Error('PARADISE_PUBLIC_KEY não configurada');
@@ -54,9 +56,13 @@ serve(async (req) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        // Autenticação exclusivamente via header (Secret Key)
+        // Padrão principal: Authorization: Bearer <SECRET_KEY>
+        'Authorization': `Bearer ${PARADISE_PUBLIC_KEY}`,
+        // Se a Paradise exigir o outro padrão no seu ambiente, podemos trocar para:
+        // 'x-api-key': PARADISE_PUBLIC_KEY,
       },
       body: JSON.stringify({
-        public_key: PARADISE_PUBLIC_KEY,
         product_hash: PARADISE_PRODUCT_HASH,
         amount: amount.toFixed(2),
         currency: 'BRL',
