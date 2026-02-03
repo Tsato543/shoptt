@@ -64,17 +64,10 @@ const Upsell4 = () => {
           </p>
         </div>
 
-        {/* Botão Paradise One-Click */}
+        {/* Botão - será integrado depois */}
         <button
-          className="paradise-upsell-btn w-full font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide"
-          style={{ backgroundColor: '#ff3870', color: '#ffffff' }}
-          data-offer-hash="upsell_6c2b550d052dd269"
-          data-modal-title="Finalize com PIX para garantir sua oferta!"
-          data-copy-button-text="Copiar Código PIX"
-          data-modal-bg="#ffffff"
-          data-modal-title-color="#1f2937"
-          data-modal-btn-color="#28a745"
-          data-modal-btn-text-color="#ffffff"
+          className="w-full font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide text-white"
+          style={{ backgroundColor: '#ff3870' }}
         >
           CONFIRMAR PAGAMENTO
         </button>

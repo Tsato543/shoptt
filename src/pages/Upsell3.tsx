@@ -42,16 +42,10 @@ const Upsell3 = () => {
             O pedido não será enviado. Faça a correção do pagamento do frete para que seu pedido seja enviado.
           </p>
           
+          {/* Botão - será integrado depois */}
           <button
-            className="paradise-upsell-btn w-full font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide flex items-center justify-center gap-2 mb-4"
-            style={{ backgroundColor: '#ff3870', color: '#ffffff' }}
-            data-offer-hash="upsell_ad1e0deb66e1d9b4"
-            data-modal-title="Finalize com PIX para garantir sua oferta!"
-            data-copy-button-text="Copiar Código PIX"
-            data-modal-bg="#ffffff"
-            data-modal-title-color="#1f2937"
-            data-modal-btn-color="#28a745"
-            data-modal-btn-text-color="#ffffff"
+            className="w-full font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide flex items-center justify-center gap-2 mb-4 text-white"
+            style={{ backgroundColor: '#ff3870' }}
           >
             <CreditCard className="w-5 h-5" />
             PAGAR FRETE
