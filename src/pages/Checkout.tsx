@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Lock, ShieldCheck, Users, Minus, Plus, Truck, Loader2, ChevronRight, Check, Copy, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { trackInitiateCheckout, trackAddPaymentInfo, trackPageView, trackAddToCart } from "@/lib/tiktokPixel";
+import { trackInitiateCheckout, trackAddPaymentInfo, trackPageView, trackAddToCart, identifyUser } from "@/lib/tiktokPixel";
 import mounjaroBox from "@/assets/checkout/mounjaro-box.png";
 import fullLogo from "@/assets/checkout/full-logo.png";
 import jadlogLogo from "@/assets/checkout/jadlog-logo.png";
@@ -116,7 +116,7 @@ const Checkout = () => {
   // Track InitiateCheckout on mount
   useEffect(() => {
     trackPageView();
-    trackInitiateCheckout(price);
+    trackInitiateCheckout('mounjaro-5mg', 'Mounjaro 5mg', price);
   }, []);
 
   // Fetch address from CEP
@@ -212,8 +212,11 @@ const Checkout = () => {
   const handlePay = async () => {
     if (pixLoading) return;
     
-    // Track AddPaymentInfo
-    trackAddPaymentInfo(total);
+    // Identify user for better TikTok attribution
+    identifyUser(formData.email, formData.telefone, formData.nome);
+    
+    // Track AddPaymentInfo with full parameters
+    trackAddPaymentInfo('mounjaro-5mg', 'Mounjaro 5mg', total);
     
     // Salvar dados do cliente no localStorage para uso nos upsells
     localStorage.setItem('customerData', JSON.stringify({

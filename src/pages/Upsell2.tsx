@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CreditCard, Info, HelpCircle } from "lucide-react";
-import { trackPageView, trackViewContent } from "@/lib/tiktokPixel";
+import { trackPageView, trackViewContent, trackInitiateCheckout, trackAddPaymentInfo } from "@/lib/tiktokPixel";
 import tiktokLogo from "@/assets/tiktok-shop.png";
 import PixModal from "@/components/PixModal";
 
@@ -25,10 +25,11 @@ const Upsell2 = () => {
     phone: '00000000000',
   });
 
-  // Track page view
+  // Track page view and InitiateCheckout
   useEffect(() => {
     trackPageView();
     trackViewContent('upsell2', 'TENF Taxa de Nota Fiscal', AMOUNT);
+    trackInitiateCheckout('upsell2-tenf', 'TENF Taxa de Nota Fiscal', AMOUNT);
   }, []);
 
   // Verifica se o usuário pagou o up1
@@ -107,7 +108,10 @@ const Upsell2 = () => {
 
         {/* Botão */}
         <button
-          onClick={() => setShowPixModal(true)}
+          onClick={() => {
+            trackAddPaymentInfo('upsell2-tenf', 'TENF Taxa de Nota Fiscal', AMOUNT);
+            setShowPixModal(true);
+          }}
           className="w-full font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide text-white"
           style={{ backgroundColor: PINK }}
         >

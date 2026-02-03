@@ -56,6 +56,26 @@ export const initTikTokPixel = () => {
   })(window, document, 'ttq');
 };
 
+// Identify user for better attribution (call after collecting user data)
+export const identifyUser = (email?: string, phone?: string, name?: string) => {
+  if (typeof window !== 'undefined' && window.ttq) {
+    const identifyData: Record<string, string> = {};
+    
+    // TikTok expects hashed values, but the SDK can hash them automatically
+    if (email) identifyData.email = email.toLowerCase().trim();
+    if (phone) identifyData.phone_number = phone.replace(/\D/g, '');
+    if (name) {
+      const nameParts = name.trim().split(' ');
+      if (nameParts.length > 0) identifyData.first_name = nameParts[0];
+      if (nameParts.length > 1) identifyData.last_name = nameParts.slice(1).join(' ');
+    }
+    
+    if (Object.keys(identifyData).length > 0) {
+      window.ttq.identify(identifyData);
+    }
+  }
+};
+
 // Track PageView
 export const trackPageView = () => {
   if (typeof window !== 'undefined' && window.ttq) {
@@ -91,32 +111,62 @@ export const trackAddToCart = (contentId: string, contentName: string, value: nu
 };
 
 // Track InitiateCheckout
-export const trackInitiateCheckout = (value: number, currency = 'BRL') => {
+export const trackInitiateCheckout = (
+  contentId: string, 
+  contentName: string, 
+  value: number, 
+  quantity = 1, 
+  currency = 'BRL'
+) => {
   if (typeof window !== 'undefined' && window.ttq) {
     window.ttq.track('InitiateCheckout', {
+      content_id: contentId,
+      content_ids: [contentId],
+      content_name: contentName,
+      content_type: 'product',
+      contents: [{ content_id: contentId, content_name: contentName, quantity, price: value }],
+      quantity: quantity,
       value: value,
       currency: currency,
     });
   }
 };
 
-// Track AddPaymentInfo
-export const trackAddPaymentInfo = (value: number, currency = 'BRL') => {
+// Track AddPaymentInfo (when user generates QR code / clicks pay)
+export const trackAddPaymentInfo = (
+  contentId: string,
+  contentName: string,
+  value: number, 
+  currency = 'BRL'
+) => {
   if (typeof window !== 'undefined' && window.ttq) {
     window.ttq.track('AddPaymentInfo', {
+      content_id: contentId,
+      content_ids: [contentId],
+      content_name: contentName,
+      content_type: 'product',
+      contents: [{ content_id: contentId, content_name: contentName, quantity: 1, price: value }],
       value: value,
       currency: currency,
     });
   }
 };
 
-// Track CompletePayment (Purchase)
-export const trackCompletePayment = (contentId: string, contentName: string, value: number, quantity = 1, currency = 'BRL') => {
+// Track CompletePayment (Purchase - when payment is confirmed)
+export const trackCompletePayment = (
+  contentId: string, 
+  contentName: string, 
+  value: number, 
+  quantity = 1, 
+  currency = 'BRL'
+) => {
   if (typeof window !== 'undefined' && window.ttq) {
     window.ttq.track('CompletePayment', {
       content_id: contentId,
+      content_ids: [contentId],
       content_name: contentName,
       content_type: 'product',
+      contents: [{ content_id: contentId, content_name: contentName, quantity, price: value }],
       quantity: quantity,
       value: value,
       currency: currency,
