@@ -21,11 +21,10 @@ serve(async (req) => {
   }
 
   try {
-    // OBS: Apesar do nome do secret, aqui estamos usando a *Secret Key* para autenticar via HEADER.
-    // Não devemos enviar a secret key dentro do JSON (campo public_key), pois a API valida tamanho.
-    const PARADISE_PUBLIC_KEY = Deno.env.get('PARADISE_PUBLIC_KEY');
-    if (!PARADISE_PUBLIC_KEY) {
-      throw new Error('PARADISE_PUBLIC_KEY não configurada');
+    // Secret Key para autenticação via header X-API-Key
+    const PARADISE_SECRET_KEY = Deno.env.get('PARADISE_PUBLIC_KEY');
+    if (!PARADISE_SECRET_KEY) {
+      throw new Error('PARADISE_SECRET_KEY não configurada');
     }
 
     const PARADISE_PRODUCT_HASH = Deno.env.get('PARADISE_PRODUCT_HASH');
@@ -44,49 +43,54 @@ serve(async (req) => {
       throw new Error('Dados do cliente incompletos');
     }
 
-    // Gerar identifier curto (máximo 20 caracteres)
-    const identifier = `pix_${Date.now().toString(36)}`;
+    // Gerar reference único (identificador da transação)
+    const reference = `order_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 
-    const origin = req.headers.get('origin') || 'https://shoptt.lovable.app';
+    // Converter valor de reais para centavos (API espera Integer em centavos)
+    const amountInCents = Math.round(amount * 100);
 
-    console.log('Gerando PIX Paradise:', { amount, customer_name, customer_email, identifier });
+    console.log('Gerando PIX Paradise:', { 
+      amountInCents, 
+      customer_name, 
+      customer_email, 
+      reference,
+      productHash: PARADISE_PRODUCT_HASH 
+    });
 
-    // Chamada à API da Paradise
-    const paradiseResponse = await fetch('https://paradise-pay.com/payment/initiate', {
+    // Chamada à API da Paradise - URL e formato corretos conforme documentação
+    const paradiseResponse = await fetch('https://multi.paradisepags.com/api/v1/transaction.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Autenticação exclusivamente via header (Secret Key)
-        // Padrão principal: Authorization: Bearer <SECRET_KEY>
-        'Authorization': `Bearer ${PARADISE_PUBLIC_KEY}`,
-        // Se a Paradise exigir o outro padrão no seu ambiente, podemos trocar para:
-        // 'x-api-key': PARADISE_PUBLIC_KEY,
+        'X-API-Key': PARADISE_SECRET_KEY,
       },
       body: JSON.stringify({
-        product_hash: PARADISE_PRODUCT_HASH,
-        amount: amount.toFixed(2),
-        currency: 'BRL',
-        identifier: identifier,
-        customer_name: customer_name,
-        customer_email: customer_email,
-        customer_cpf: customer_cpf,
-        customer_phone: customer_phone,
-        details: details,
-        success_url: `${origin}/up1`,
-        cancel_url: `${origin}/checkout`,
-        ipn_url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/paradise-webhook`,
-        site_logo: 'https://shoptt.lovable.app/favicon.ico',
+        amount: amountInCents,
+        description: details || 'Compra na loja',
+        reference: reference,
+        productHash: PARADISE_PRODUCT_HASH,
+        customer: {
+          name: customer_name,
+          email: customer_email,
+          document: customer_cpf.replace(/\D/g, ''), // Remove formatação, só números
+          phone: customer_phone.replace(/\D/g, ''),  // Remove formatação, só números
+        },
       }),
     });
 
     const paradiseData = await paradiseResponse.json();
     console.log('Resposta Paradise:', paradiseData);
 
-    if (paradiseData.success === 'ok' && paradiseData.url) {
+    if (paradiseData.status === 'success' && paradiseData.qr_code) {
       return new Response(
         JSON.stringify({
           success: true,
-          checkout_url: paradiseData.url,
+          qr_code: paradiseData.qr_code,
+          qr_code_base64: paradiseData.qr_code_base64,
+          transaction_id: paradiseData.transaction_id,
+          reference: paradiseData.id,
+          amount: paradiseData.amount,
+          expires_at: paradiseData.expires_at,
           message: 'PIX gerado com sucesso',
         }),
         {
@@ -95,7 +99,7 @@ serve(async (req) => {
         }
       );
     } else {
-      const errorMsg = paradiseData.errors?.join(', ') || paradiseData.message || 'Erro ao gerar PIX';
+      const errorMsg = paradiseData.message || paradiseData.error || 'Erro ao gerar PIX';
       throw new Error(errorMsg);
     }
   } catch (error) {
