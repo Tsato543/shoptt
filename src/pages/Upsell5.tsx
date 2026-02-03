@@ -2,10 +2,6 @@ import { CheckCircle, AlertTriangle, Clock, Gift, CircleCheck } from "lucide-rea
 import tiktokLogo from "@/assets/tiktok-shop.png";
 
 const Upsell5 = () => {
-  const handlePayment = () => {
-    window.location.href = "https://ambienteseguro.org.ua/c/2907df25b1";
-  };
-
   return (
     <div className="min-h-screen bg-secondary/30 flex flex-col">
       {/* Header TikTok */}
@@ -76,9 +72,8 @@ const Upsell5 = () => {
               </div>
             </div>
 
-            {/* Botão */}
+            {/* Botão - será integrado depois */}
             <button
-              onClick={handlePayment}
               className="w-full bg-foreground hover:bg-foreground/90 text-background font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide"
             >
               QUERO GANHAR ATÉ R$ 3000
