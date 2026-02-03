@@ -5,6 +5,7 @@ import { trackViewContent, trackPageView } from "@/lib/tiktokPixel";
 
 // Components
 import ReviewSection from "@/components/ReviewSection";
+import TermsModal from "@/components/TermsModal";
 
 // Images
 import foto1 from "@/assets/mounjaro/foto1.png";
@@ -21,6 +22,7 @@ const ProductMounjaro = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [countdown, setCountdown] = useState({ h: 0, m: 9, s: 37 });
+  const [termsOpen, setTermsOpen] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
 
   const images = [
@@ -380,15 +382,17 @@ const ProductMounjaro = () => {
 
         {/* Terms Link */}
         <div className="py-4 text-center">
-          <a 
-            href="#" 
-            onClick={(e) => { e.preventDefault(); alert('Termos de Uso e Política de Privacidade'); }}
+          <button 
+            onClick={() => setTermsOpen(true)}
             className="text-[10px] text-muted-foreground/50 hover:text-muted-foreground"
           >
             Termos de Uso
-          </a>
+          </button>
         </div>
       </main>
+
+      {/* Terms Modal */}
+      <TermsModal open={termsOpen} onOpenChange={setTermsOpen} />
 
       {/* Fixed Action Bar */}
       <div className="fixed inset-x-0 bottom-0 z-50 bg-background border-t shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
