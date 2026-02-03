@@ -24,6 +24,14 @@ const Upsell4 = () => {
     phone: '00000000000',
   });
 
+  // Verifica se o usuário pagou o up3
+  useEffect(() => {
+    const up3Paid = localStorage.getItem('up3PaymentApproved');
+    if (!up3Paid) {
+      navigate('/checkout', { replace: true });
+    }
+  }, [navigate]);
+
   useEffect(() => {
     const stored = localStorage.getItem('customerData');
     if (stored) {
@@ -38,6 +46,7 @@ const Upsell4 = () => {
 
   const handleSuccess = () => {
     setShowPixModal(false);
+    localStorage.setItem('up4PaymentApproved', 'true');
     navigate('/up5');
   };
 
