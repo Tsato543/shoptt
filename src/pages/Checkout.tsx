@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Copy, Check, Loader2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import tiktokLogo from "@/assets/tiktok-shop.png";
+import { Loader2 } from "lucide-react";
+import slimHealthLogo from "@/assets/slimhealth-logo-2.png";
 
 interface AddressData {
   logradouro: string;
@@ -11,10 +10,8 @@ interface AddressData {
 }
 
 const Checkout = () => {
-  const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [showPix, setShowPix] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
 
   // Form state
@@ -33,9 +30,6 @@ const Checkout = () => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  // PIX code (mock)
-  const pixCode = "00020126580014br.gov.bcb.pix0136a629532e-7372-4d12-9875-fd5ef86b3912520400005303986540567.905802BR5925SLIMHEALTH COMERCIO LTDA6009SAO PAULO62070503***6304E2CA";
 
   // Format phone
   const formatPhone = (value: string) => {
@@ -121,104 +115,177 @@ const Checkout = () => {
     }
   };
 
-  const validateForm = () => {
+  const validateStep1 = () => {
     const newErrors: Record<string, string> = {};
     
     if (!formData.nome.trim()) newErrors.nome = "Nome obrigatório";
     if (!formData.email.includes("@")) newErrors.email = "Email inválido";
     if (formData.telefone.replace(/\D/g, "").length < 10) newErrors.telefone = "Telefone inválido";
     if (formData.cpf.replace(/\D/g, "").length !== 11) newErrors.cpf = "CPF inválido";
-    if (formData.cep.replace(/\D/g, "").length !== 8) newErrors.cep = "CEP inválido";
-    if (!formData.logradouro.trim()) newErrors.logradouro = "Endereço obrigatório";
-    if (!formData.numero.trim()) newErrors.numero = "Número obrigatório";
-    if (!formData.bairro.trim()) newErrors.bairro = "Bairro obrigatório";
-    if (!formData.cidade.trim()) newErrors.cidade = "Cidade obrigatória";
-    if (!formData.estado.trim()) newErrors.estado = "Estado obrigatório";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
+  const handleContinueStep1 = async () => {
+    if (!validateStep1()) return;
 
     setIsLoading(true);
-    // Simulate processing
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, 500));
     setIsLoading(false);
-    setShowPix(true);
+    setCurrentStep(2);
   };
 
-  const handleCopyPix = async () => {
-    try {
-      await navigator.clipboard.writeText(pixCode);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Fallback
-    }
-  };
+  // Step indicator component
+  const StepIndicator = () => (
+    <div className="flex items-center justify-center gap-2 py-4">
+      {[1, 2, 3].map((step) => (
+        <div key={step} className="flex items-center">
+          <div
+            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
+              step === currentStep
+                ? "bg-[#00C853] text-white"
+                : step < currentStep
+                ? "bg-[#00C853] text-white"
+                : "bg-gray-200 text-gray-500"
+            }`}
+          >
+            {step}
+          </div>
+          {step < 3 && (
+            <div
+              className={`w-8 h-0.5 ${
+                step < currentStep ? "bg-[#00C853]" : "bg-gray-200"
+              }`}
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  );
 
-  if (showPix) {
+  // Step 1: Personal Data
+  if (currentStep === 1) {
     return (
-      <div className="min-h-screen bg-secondary/30 flex flex-col">
+      <div className="min-h-screen bg-[#F5F5F5] flex flex-col">
         {/* Header */}
-        <div className="bg-card py-4 border-b border-border">
-          <img src={tiktokLogo} alt="TikTok Shop" className="h-8 mx-auto" />
+        <div className="bg-white py-3 px-4 border-b border-gray-200">
+          <div className="max-w-md mx-auto flex items-center justify-center">
+            <img src={slimHealthLogo} alt="SlimHealth" className="h-10" />
+          </div>
         </div>
 
-        <div className="flex-1 p-4 max-w-md mx-auto w-full space-y-4">
-          {/* Success Card */}
-          <div className="bg-card rounded-2xl p-6 shadow-card text-center">
-            <div className="w-16 h-16 rounded-full bg-emerald-500 flex items-center justify-center mx-auto mb-4">
-              <Check className="w-10 h-10 text-white" />
+        {/* Step Indicator */}
+        <div className="bg-white border-b border-gray-200">
+          <div className="max-w-md mx-auto">
+            <StepIndicator />
+          </div>
+        </div>
+
+        <div className="flex-1 p-4 max-w-md mx-auto w-full space-y-4 pb-28">
+          {/* Product Summary */}
+          <div className="bg-white rounded-2xl p-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden">
+                <img 
+                  src="/placeholder.svg" 
+                  alt="Mounjaro" 
+                  className="w-12 h-12 object-contain"
+                />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-gray-900 text-sm">Mounjaro™️ 5 mg</p>
+                <p className="text-xs text-gray-500">Caneta injetável</p>
+              </div>
+              <div className="text-right">
+                <p className="font-bold text-[#00C853] text-lg">R$ 67,90</p>
+                <p className="text-xs text-gray-400 line-through">R$ 1.789,87</p>
+              </div>
             </div>
-            <h1 className="text-xl font-bold text-foreground mb-2">Pedido Gerado!</h1>
-            <p className="text-muted-foreground text-sm">
-              Escaneie o QR Code ou copie o código PIX para finalizar o pagamento
-            </p>
           </div>
 
-          {/* PIX Card */}
-          <div className="bg-card rounded-2xl p-6 shadow-card">
-            <div className="text-center mb-4">
-              <p className="text-muted-foreground text-sm uppercase tracking-wide mb-1">Valor a pagar</p>
-              <p className="text-3xl font-extrabold text-emerald-500">R$ 67,90</p>
+          {/* Personal Data Form */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm space-y-4">
+            <h2 className="font-bold text-gray-900 text-lg">Dados Pessoais</h2>
+            
+            <div>
+              <label className="text-sm text-gray-600 mb-1.5 block">Nome completo</label>
+              <input
+                type="text"
+                placeholder="Digite seu nome completo"
+                value={formData.nome}
+                onChange={e => handleChange("nome", e.target.value)}
+                className={`w-full px-4 py-3.5 rounded-xl bg-[#F5F5F5] border-2 ${
+                  errors.nome ? "border-red-500" : "border-transparent"
+                } focus:border-[#00C853] focus:outline-none transition text-sm`}
+              />
+              {errors.nome && <p className="text-red-500 text-xs mt-1">{errors.nome}</p>}
             </div>
 
-            {/* QR Code placeholder */}
-            <div className="bg-white p-4 rounded-xl mb-4 flex items-center justify-center">
-              <div className="w-48 h-48 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTYgMjU2Ij48cmVjdCB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0zMiAzMmg2NHY2NEgzMnptOCA4djQ4aDQ4VjQwem0xNiAxNmgyNHYyNEg1NnptNjQtMjRoOHY4aC04em0xNiAwaDh2OGgtOHptMTYgMGg4djhoLTh6bTE2IDBoMTZ2OGgtMTZ6bTI0IDBoOHY4aC04em0xNiAwaDh2OGgtOHptMTYgMGg4djhoLTh6TTMyIDk2aDh2OGgtOHptMTYgMGg4djhoLTh6bTE2IDBoOHY4aC04em0xNiAwaDh2OGgtOHptMTYgMGg4djhoLTh6bTE2IDBoOHY4aC04em0xNiAwaDh2OGgtOHptMTYgMGg4djhoLTh6bTE2IDBoOHY4aC04em0xNiAwaDh2OGgtOHptMTYgMGg4djhoLTh6TTMyIDEyOGg4djhoLTh6bTgwIDBoOHY4aC04em00OCAwaDh2OGgtOHptNDggMGg4djhoLTh6TTMyIDE2MGg2NHY2NEgzMnptOCA4djQ4aDQ4di00OHptMTYgMTZoMjR2MjRINTZ6bTY0LTI0aDh2OGgtOHptMTYgMGg4djhoLTh6bTE2IDBoOHY4aC04em0xNiAwaDh2OGgtOHptMTYgMGg4djhoLTh6bTE2IDBoOHY4aC04em0xNiAwaDY0djY0aC02NHptOCA4djQ4aDQ4di00OHptMTYgMTZoMjR2MjRoLTI0eiIvPjwvc3ZnPg==')] bg-contain bg-center bg-no-repeat" />
+            <div>
+              <label className="text-sm text-gray-600 mb-1.5 block">E-mail</label>
+              <input
+                type="email"
+                placeholder="Digite seu e-mail"
+                value={formData.email}
+                onChange={e => handleChange("email", e.target.value)}
+                className={`w-full px-4 py-3.5 rounded-xl bg-[#F5F5F5] border-2 ${
+                  errors.email ? "border-red-500" : "border-transparent"
+                } focus:border-[#00C853] focus:outline-none transition text-sm`}
+              />
+              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
 
-            {/* PIX Code */}
-            <div className="bg-secondary/50 rounded-xl p-3 mb-4">
-              <p className="text-xs text-muted-foreground mb-1">Código PIX Copia e Cola</p>
-              <p className="text-xs text-foreground font-mono break-all line-clamp-2">{pixCode}</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm text-gray-600 mb-1.5 block">Telefone</label>
+                <input
+                  type="tel"
+                  placeholder="(00) 00000-0000"
+                  value={formData.telefone}
+                  onChange={e => handleChange("telefone", e.target.value)}
+                  className={`w-full px-4 py-3.5 rounded-xl bg-[#F5F5F5] border-2 ${
+                    errors.telefone ? "border-red-500" : "border-transparent"
+                  } focus:border-[#00C853] focus:outline-none transition text-sm`}
+                />
+                {errors.telefone && <p className="text-red-500 text-xs mt-1">{errors.telefone}</p>}
+              </div>
+              <div>
+                <label className="text-sm text-gray-600 mb-1.5 block">CPF</label>
+                <input
+                  type="text"
+                  placeholder="000.000.000-00"
+                  value={formData.cpf}
+                  onChange={e => handleChange("cpf", e.target.value)}
+                  className={`w-full px-4 py-3.5 rounded-xl bg-[#F5F5F5] border-2 ${
+                    errors.cpf ? "border-red-500" : "border-transparent"
+                  } focus:border-[#00C853] focus:outline-none transition text-sm`}
+                />
+                {errors.cpf && <p className="text-red-500 text-xs mt-1">{errors.cpf}</p>}
+              </div>
             </div>
+          </div>
+        </div>
 
+        {/* Fixed Bottom Button */}
+        <div className="fixed inset-x-0 bottom-0 bg-white border-t border-gray-200 p-4 shadow-lg">
+          <div className="max-w-md mx-auto">
             <button
-              onClick={handleCopyPix}
-              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-6 rounded-xl text-base transition-colors flex items-center justify-center gap-2"
+              onClick={handleContinueStep1}
+              disabled={isLoading}
+              className="w-full bg-[#00C853] hover:bg-[#00B548] disabled:opacity-70 text-white font-bold py-4 px-6 rounded-xl text-base transition-colors flex items-center justify-center gap-2"
             >
-              {copied ? (
+              {isLoading ? (
                 <>
-                  <Check className="w-5 h-5" />
-                  Código Copiado!
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Processando...
                 </>
               ) : (
-                <>
-                  <Copy className="w-5 h-5" />
-                  Copiar Código PIX
-                </>
+                "Continuar"
               )}
             </button>
-          </div>
-
-          {/* Timer */}
-          <div className="bg-card rounded-2xl p-4 shadow-card text-center">
-            <p className="text-muted-foreground text-sm">
-              ⏱️ O código PIX expira em <span className="font-bold text-foreground">30:00</span> minutos
+            <p className="text-center text-xs text-gray-500 mt-2">
+              🔒 Seus dados estão protegidos
             </p>
           </div>
         </div>
@@ -226,219 +293,16 @@ const Checkout = () => {
     );
   }
 
+  // Placeholder for step 2 and 3 (will be implemented next)
   return (
-    <div className="min-h-screen bg-secondary/30 flex flex-col">
-      {/* Header */}
-      <div className="bg-card py-3 border-b border-border sticky top-0 z-50">
-        <div className="max-w-md mx-auto px-4 flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="p-2 rounded-lg hover:bg-muted active:scale-95 transition"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <img src={tiktokLogo} alt="TikTok Shop" className="h-6" />
-          <span className="font-semibold text-foreground">Checkout</span>
-        </div>
-      </div>
-
-      <div className="flex-1 p-4 max-w-md mx-auto w-full space-y-4 pb-32">
-        {/* Product Summary */}
-        <div className="bg-card rounded-2xl p-4 shadow-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-semibold text-foreground text-sm">Mounjaro™️ 5 mg</p>
-              <p className="text-xs text-muted-foreground">Caneta injetável</p>
-            </div>
-            <div className="text-right">
-              <p className="font-bold text-emerald-500">R$ 67,90</p>
-              <p className="text-xs text-muted-foreground line-through">R$ 1.789,87</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Personal Data */}
-        <div className="bg-card rounded-2xl p-4 shadow-card space-y-3">
-          <h2 className="font-bold text-foreground">Dados Pessoais</h2>
-          
-          <div>
-            <input
-              type="text"
-              placeholder="Nome completo"
-              value={formData.nome}
-              onChange={e => handleChange("nome", e.target.value)}
-              className={`w-full px-4 py-3 rounded-xl bg-secondary/50 border ${errors.nome ? "border-red-500" : "border-transparent"} focus:border-primary focus:outline-none transition text-sm`}
-            />
-            {errors.nome && <p className="text-red-500 text-xs mt-1">{errors.nome}</p>}
-          </div>
-
-          <div>
-            <input
-              type="email"
-              placeholder="E-mail"
-              value={formData.email}
-              onChange={e => handleChange("email", e.target.value)}
-              className={`w-full px-4 py-3 rounded-xl bg-secondary/50 border ${errors.email ? "border-red-500" : "border-transparent"} focus:border-primary focus:outline-none transition text-sm`}
-            />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <input
-                type="tel"
-                placeholder="Telefone"
-                value={formData.telefone}
-                onChange={e => handleChange("telefone", e.target.value)}
-                className={`w-full px-4 py-3 rounded-xl bg-secondary/50 border ${errors.telefone ? "border-red-500" : "border-transparent"} focus:border-primary focus:outline-none transition text-sm`}
-              />
-              {errors.telefone && <p className="text-red-500 text-xs mt-1">{errors.telefone}</p>}
-            </div>
-            <div>
-              <input
-                type="text"
-                placeholder="CPF"
-                value={formData.cpf}
-                onChange={e => handleChange("cpf", e.target.value)}
-                className={`w-full px-4 py-3 rounded-xl bg-secondary/50 border ${errors.cpf ? "border-red-500" : "border-transparent"} focus:border-primary focus:outline-none transition text-sm`}
-              />
-              {errors.cpf && <p className="text-red-500 text-xs mt-1">{errors.cpf}</p>}
-            </div>
-          </div>
-        </div>
-
-        {/* Address */}
-        <div className="bg-card rounded-2xl p-4 shadow-card space-y-3">
-          <h2 className="font-bold text-foreground">Endereço de Entrega</h2>
-          
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="CEP"
-              value={formData.cep}
-              onChange={e => handleChange("cep", e.target.value)}
-              className={`w-full px-4 py-3 rounded-xl bg-secondary/50 border ${errors.cep ? "border-red-500" : "border-transparent"} focus:border-primary focus:outline-none transition text-sm`}
-            />
-            {cepLoading && (
-              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 animate-spin text-muted-foreground" />
-            )}
-            {errors.cep && <p className="text-red-500 text-xs mt-1">{errors.cep}</p>}
-          </div>
-
-          <div>
-            <input
-              type="text"
-              placeholder="Endereço"
-              value={formData.logradouro}
-              onChange={e => handleChange("logradouro", e.target.value)}
-              className={`w-full px-4 py-3 rounded-xl bg-secondary/50 border ${errors.logradouro ? "border-red-500" : "border-transparent"} focus:border-primary focus:outline-none transition text-sm`}
-            />
-            {errors.logradouro && <p className="text-red-500 text-xs mt-1">{errors.logradouro}</p>}
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <input
-                type="text"
-                placeholder="Número"
-                value={formData.numero}
-                onChange={e => handleChange("numero", e.target.value)}
-                className={`w-full px-4 py-3 rounded-xl bg-secondary/50 border ${errors.numero ? "border-red-500" : "border-transparent"} focus:border-primary focus:outline-none transition text-sm`}
-              />
-              {errors.numero && <p className="text-red-500 text-xs mt-1">{errors.numero}</p>}
-            </div>
-            <div className="col-span-2">
-              <input
-                type="text"
-                placeholder="Complemento (opcional)"
-                value={formData.complemento}
-                onChange={e => handleChange("complemento", e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary focus:outline-none transition text-sm"
-              />
-            </div>
-          </div>
-
-          <div>
-            <input
-              type="text"
-              placeholder="Bairro"
-              value={formData.bairro}
-              onChange={e => handleChange("bairro", e.target.value)}
-              className={`w-full px-4 py-3 rounded-xl bg-secondary/50 border ${errors.bairro ? "border-red-500" : "border-transparent"} focus:border-primary focus:outline-none transition text-sm`}
-            />
-            {errors.bairro && <p className="text-red-500 text-xs mt-1">{errors.bairro}</p>}
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2">
-              <input
-                type="text"
-                placeholder="Cidade"
-                value={formData.cidade}
-                onChange={e => handleChange("cidade", e.target.value)}
-                className={`w-full px-4 py-3 rounded-xl bg-secondary/50 border ${errors.cidade ? "border-red-500" : "border-transparent"} focus:border-primary focus:outline-none transition text-sm`}
-              />
-              {errors.cidade && <p className="text-red-500 text-xs mt-1">{errors.cidade}</p>}
-            </div>
-            <div>
-              <input
-                type="text"
-                placeholder="UF"
-                value={formData.estado}
-                onChange={e => handleChange("estado", e.target.value.toUpperCase().slice(0, 2))}
-                className={`w-full px-4 py-3 rounded-xl bg-secondary/50 border ${errors.estado ? "border-red-500" : "border-transparent"} focus:border-primary focus:outline-none transition text-sm`}
-              />
-              {errors.estado && <p className="text-red-500 text-xs mt-1">{errors.estado}</p>}
-            </div>
-          </div>
-        </div>
-
-        {/* Payment Method */}
-        <div className="bg-card rounded-2xl p-4 shadow-card">
-          <h2 className="font-bold text-foreground mb-3">Forma de Pagamento</h2>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-emerald-50 border-2 border-emerald-500">
-            <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">₽</span>
-            </div>
-            <div>
-              <p className="font-semibold text-emerald-700">PIX</p>
-              <p className="text-xs text-emerald-600">Aprovação instantânea</p>
-            </div>
-            <div className="ml-auto">
-              <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
-                <Check className="w-3 h-3 text-white" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Fixed Bottom */}
-      <div className="fixed inset-x-0 bottom-0 bg-card border-t border-border p-4 shadow-lg">
-        <div className="max-w-md mx-auto">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-muted-foreground">Total</span>
-            <span className="text-2xl font-extrabold text-emerald-500">R$ 67,90</span>
-          </div>
-          <button
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:opacity-70 text-white font-bold py-4 px-6 rounded-xl text-base transition-colors flex items-center justify-center gap-2"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Processando...
-              </>
-            ) : (
-              "Gerar PIX"
-            )}
-          </button>
-          <p className="text-center text-xs text-muted-foreground mt-2">
-            🔒 Pagamento 100% seguro
-          </p>
-        </div>
-      </div>
+    <div className="min-h-screen bg-[#F5F5F5] flex flex-col items-center justify-center">
+      <p className="text-gray-600">Etapa {currentStep} - Em breve</p>
+      <button 
+        onClick={() => setCurrentStep(1)} 
+        className="mt-4 text-[#00C853] underline"
+      >
+        Voltar para Etapa 1
+      </button>
     </div>
   );
 };
