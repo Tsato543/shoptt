@@ -378,6 +378,16 @@ const ProductMounjaro = () => {
           </div>
         </section>
 
+        {/* Terms Link */}
+        <div className="py-4 text-center">
+          <a 
+            href="#" 
+            onClick={(e) => { e.preventDefault(); alert('Termos de Uso e Política de Privacidade'); }}
+            className="text-[10px] text-muted-foreground/50 hover:text-muted-foreground"
+          >
+            Termos de Uso
+          </a>
+        </div>
       </main>
 
       {/* Fixed Action Bar */}
