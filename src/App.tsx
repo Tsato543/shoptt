@@ -10,6 +10,7 @@ import Upsell2 from "./pages/Upsell2";
 import Upsell3 from "./pages/Upsell3";
 import Upsell4 from "./pages/Upsell4";
 import Upsell5 from "./pages/Upsell5";
+import PixPayment from "./pages/PixPayment";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<ProductMounjaro />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/pix" element={<PixPayment />} />
           <Route path="/up1" element={<Upsell1 />} />
           <Route path="/up2" element={<Upsell2 />} />
           <Route path="/up3" element={<Upsell3 />} />
