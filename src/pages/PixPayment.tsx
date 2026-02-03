@@ -23,11 +23,10 @@ const PixPayment = () => {
   const location = useLocation();
   const state = (location.state || null) as PixState | null;
 
+  // Sempre 14 minutos a partir de quando a tela foi carregada
   const expiresAtMs = useMemo(() => {
-    if (!state?.expiresAt) return Date.now() + 30 * 60 * 1000;
-    const ms = Date.parse(state.expiresAt);
-    return Number.isFinite(ms) ? ms : Date.now() + 30 * 60 * 1000;
-  }, [state?.expiresAt]);
+    return Date.now() + 14 * 60 * 1000; // 14 minutos
+  }, []);
 
   const [now, setNow] = useState(Date.now());
 
