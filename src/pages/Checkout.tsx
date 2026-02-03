@@ -232,6 +232,7 @@ const Checkout = () => {
             qrCode: data?.qr_code || '',
             qrImageUrl: data?.qr_code_base64 || '',
             expiresAt: data?.expires_at || undefined,
+            reference: data?.reference || identifier,
           },
         });
       } else {
