@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { XCircle, Info } from "lucide-react";
+import { trackPageView, trackViewContent } from "@/lib/tiktokPixel";
 import tiktokLogo from "@/assets/tiktok-shop.png";
 import PixModal from "@/components/PixModal";
 
@@ -23,6 +24,12 @@ const Upsell4 = () => {
     cpf: '00000000000',
     phone: '00000000000',
   });
+
+  // Track page view
+  useEffect(() => {
+    trackPageView();
+    trackViewContent('upsell4', 'Confirmação de Reembolso', AMOUNT);
+  }, []);
 
   // Verifica se o usuário pagou o up3
   useEffect(() => {
