@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, Copy, Loader2, ShieldCheck, Clock } from "lucide-react";
+import { ArrowLeft, Copy, Loader2, ShieldCheck, Clock, CheckCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 type PixState = {
   amountReais: number;
@@ -8,6 +9,7 @@ type PixState = {
   qrCode?: string;
   qrImageUrl?: string;
   expiresAt?: string;
+  reference?: string;
 };
 
 const PINK = "#FF3B66";
@@ -29,11 +31,44 @@ const PixPayment = () => {
 
   const [now, setNow] = useState(Date.now());
   const [copied, setCopied] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'approved' | 'failed'>('pending');
 
+  // Timer
   useEffect(() => {
     const t = window.setInterval(() => setNow(Date.now()), 500);
     return () => window.clearInterval(t);
   }, []);
+
+  // Polling para verificar status do pagamento
+  useEffect(() => {
+    if (!state?.reference) return;
+    if (paymentStatus === 'approved') return;
+
+    const checkStatus = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('check-pix-status', {
+          body: { reference: state.reference },
+        });
+
+        if (!error && data?.success && data?.status === 'approved') {
+          setPaymentStatus('approved');
+          // Aguarda 2 segundos para mostrar feedback e redireciona
+          setTimeout(() => {
+            navigate('/up1');
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Erro ao verificar status:', err);
+      }
+    };
+
+    // Verifica a cada 5 segundos
+    const interval = setInterval(checkStatus, 5000);
+    // Verifica imediatamente também
+    checkStatus();
+
+    return () => clearInterval(interval);
+  }, [state?.reference, paymentStatus, navigate]);
 
   const remainingMs = clamp0(expiresAtMs - now);
   const mm = Math.floor(remainingMs / 60000);
@@ -166,13 +201,22 @@ const PixPayment = () => {
           </div>
         </section>
 
-        {/* Waiting status */}
-        <section className="mx-4 mt-2 rounded-xl p-3.5 bg-blue-50 border border-blue-100">
-          <div className="flex items-center justify-center gap-2 text-blue-600">
-            <Loader2 className="w-4 h-4 animate-spin" />
-            <span className="text-sm font-medium">Aguardando confirmação do pagamento...</span>
-          </div>
-        </section>
+        {/* Payment status */}
+        {paymentStatus === 'approved' ? (
+          <section className="mx-4 mt-2 rounded-xl p-4 bg-emerald-50 border border-emerald-200">
+            <div className="flex items-center justify-center gap-2 text-emerald-600">
+              <CheckCircle className="w-5 h-5" />
+              <span className="font-semibold">Pagamento confirmado! Redirecionando...</span>
+            </div>
+          </section>
+        ) : (
+          <section className="mx-4 mt-2 rounded-xl p-3.5 bg-blue-50 border border-blue-100">
+            <div className="flex items-center justify-center gap-2 text-blue-600">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-sm font-medium">Aguardando confirmação do pagamento...</span>
+            </div>
+          </section>
+        )}
 
         {/* Instructions */}
         <section className="bg-white mx-4 mt-4 rounded-2xl p-5 shadow-sm">
