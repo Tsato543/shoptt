@@ -1,7 +1,46 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { XCircle, Info } from "lucide-react";
 import tiktokLogo from "@/assets/tiktok-shop.png";
+import PixModal from "@/components/PixModal";
+
+const PINK = "#ff3870";
+const AMOUNT = 26.56;
+
+interface CustomerData {
+  name: string;
+  email: string;
+  cpf: string;
+  phone: string;
+}
 
 const Upsell4 = () => {
+  const navigate = useNavigate();
+  const [showPixModal, setShowPixModal] = useState(false);
+  const [customerData, setCustomerData] = useState<CustomerData>({
+    name: 'Cliente',
+    email: 'cliente@email.com',
+    cpf: '00000000000',
+    phone: '00000000000',
+  });
+
+  useEffect(() => {
+    const stored = localStorage.getItem('customerData');
+    if (stored) {
+      try {
+        const data = JSON.parse(stored);
+        setCustomerData(data);
+      } catch {
+        // Mantém dados default
+      }
+    }
+  }, []);
+
+  const handleSuccess = () => {
+    setShowPixModal(false);
+    navigate('/up5');
+  };
+
   return (
     <div className="min-h-screen bg-secondary/30 flex flex-col">
       {/* Header TikTok */}
@@ -57,21 +96,36 @@ const Upsell4 = () => {
             VALOR A SER REEMBOLSADO
           </p>
           <p className="text-4xl font-extrabold text-rose-500 mb-3">
-            R$ 26,56
+            R$ {AMOUNT.toFixed(2).replace('.', ',')}
           </p>
           <p className="text-muted-foreground text-sm">
             Clique abaixo para confirmar o pagamento e iniciar o processo de reembolso
           </p>
         </div>
 
-        {/* Botão - será integrado depois */}
+        {/* Botão */}
         <button
+          onClick={() => setShowPixModal(true)}
           className="w-full font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide text-white"
-          style={{ backgroundColor: '#ff3870' }}
+          style={{ backgroundColor: PINK }}
         >
           CONFIRMAR PAGAMENTO
         </button>
       </div>
+
+      {/* PIX Modal */}
+      <PixModal
+        isOpen={showPixModal}
+        onClose={() => setShowPixModal(false)}
+        amount={AMOUNT}
+        title="Confirmação de Reembolso"
+        customerName={customerData.name}
+        customerEmail={customerData.email}
+        customerCpf={customerData.cpf}
+        customerPhone={customerData.phone}
+        details="Confirmação de Reembolso"
+        onSuccess={handleSuccess}
+      />
     </div>
   );
 };
