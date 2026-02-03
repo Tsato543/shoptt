@@ -4,7 +4,7 @@ import { Check, AlertTriangle, X, CreditCard } from "lucide-react";
 import PixModal from "@/components/PixModal";
 
 const PINK = "#ff3870";
-const AMOUNT = 32.45;
+const AMOUNT = 31.90;
 
 interface CustomerData {
   name: string;
