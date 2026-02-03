@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ShoppingCart, MoreHorizontal, ChevronRight, ChevronLeft, Bookmark, Star, Zap, Shield } from "lucide-react";
+import { trackViewContent, trackPageView } from "@/lib/tiktokPixel";
 
 // Components
 import ReviewSection from "@/components/ReviewSection";
@@ -28,6 +29,12 @@ const ProductMounjaro = () => {
     { src: foto3, alt: "Mounjaro™️ 5 mg — Vista lateral" },
     { src: foto4, alt: "Mounjaro™️ 5 mg — Produto na mão" },
   ];
+
+  // Track ViewContent on mount
+  useEffect(() => {
+    trackPageView();
+    trackViewContent('mounjaro-5mg', 'Mounjaro™️ 5 mg — Caneta injetável', 197.00);
+  }, []);
 
   // Countdown timer
   useEffect(() => {

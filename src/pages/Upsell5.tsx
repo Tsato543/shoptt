@@ -1,10 +1,16 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle, AlertTriangle, Clock, Gift, CircleCheck } from "lucide-react";
+import { trackPageView } from "@/lib/tiktokPixel";
 import tiktokLogo from "@/assets/tiktok-shop.png";
 
 const Upsell5 = () => {
   const navigate = useNavigate();
+
+  // Track page view
+  useEffect(() => {
+    trackPageView();
+  }, []);
 
   // Verifica se o usuário pagou o up4
   useEffect(() => {

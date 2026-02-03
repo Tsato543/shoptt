@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Copy, Loader2, ShieldCheck, Clock, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { trackCompletePayment, trackPageView } from "@/lib/tiktokPixel";
 
 type PixState = {
   amountReais: number;
@@ -33,6 +34,11 @@ const PixPayment = () => {
   const [copied, setCopied] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<'pending' | 'approved' | 'failed'>('pending');
 
+  // Track page view
+  useEffect(() => {
+    trackPageView();
+  }, []);
+
   // Timer
   useEffect(() => {
     const t = window.setInterval(() => setNow(Date.now()), 500);
@@ -52,6 +58,8 @@ const PixPayment = () => {
 
         if (!error && data?.success && data?.status === 'approved') {
           setPaymentStatus('approved');
+          // Track CompletePayment
+          trackCompletePayment('checkout', 'Mounjaro 5mg', state.amountReais);
           // Marca no localStorage que o pagamento do checkout foi aprovado
           localStorage.setItem('checkoutPaymentApproved', 'true');
           // Aguarda 2 segundos para mostrar feedback e redireciona

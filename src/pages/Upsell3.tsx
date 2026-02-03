@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Check, AlertTriangle, X, CreditCard } from "lucide-react";
+import { trackPageView, trackViewContent } from "@/lib/tiktokPixel";
 import PixModal from "@/components/PixModal";
 
 const PINK = "#ff3870";
@@ -22,6 +23,12 @@ const Upsell3 = () => {
     cpf: '00000000000',
     phone: '00000000000',
   });
+
+  // Track page view
+  useEffect(() => {
+    trackPageView();
+    trackViewContent('upsell3', 'Correção ICMS', AMOUNT);
+  }, []);
 
   // Verifica se o usuário pagou o up2
   useEffect(() => {

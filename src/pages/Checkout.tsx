@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Lock, ShieldCheck, Users, Minus, Plus, Truck, Loader2, ChevronRight, Check, Copy, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { trackInitiateCheckout, trackAddPaymentInfo, trackPageView, trackAddToCart } from "@/lib/tiktokPixel";
 import mounjaroBox from "@/assets/checkout/mounjaro-box.png";
 import fullLogo from "@/assets/checkout/full-logo.png";
 import jadlogLogo from "@/assets/checkout/jadlog-logo.png";
@@ -112,6 +113,12 @@ const Checkout = () => {
   const bumpsTotal = orderBumps.filter(b => selectedBumps.includes(b.id)).reduce((sum, b) => sum + b.price, 0);
   const total = (price * quantity) + shippingPrice + bumpsTotal;
 
+  // Track InitiateCheckout on mount
+  useEffect(() => {
+    trackPageView();
+    trackInitiateCheckout(price);
+  }, []);
+
   // Fetch address from CEP
   const fetchAddress = async (cep: string) => {
     const cleanCep = cep.replace(/\D/g, "");
@@ -155,6 +162,10 @@ const Checkout = () => {
   };
 
   const toggleBump = (id: string) => {
+    const bump = orderBumps.find(b => b.id === id);
+    if (bump && !selectedBumps.includes(id)) {
+      trackAddToCart(id, bump.name, bump.price);
+    }
     setSelectedBumps(prev => 
       prev.includes(id) ? prev.filter(b => b !== id) : [...prev, id]
     );
@@ -200,6 +211,9 @@ const Checkout = () => {
 
   const handlePay = async () => {
     if (pixLoading) return;
+    
+    // Track AddPaymentInfo
+    trackAddPaymentInfo(total);
     
     // Salvar dados do cliente no localStorage para uso nos upsells
     localStorage.setItem('customerData', JSON.stringify({
