@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, Lock, ShieldCheck, Users, Minus, Plus, Truck, Loader2, ChevronRight, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import mounjaroBox from "@/assets/checkout/mounjaro-box.png";
@@ -21,10 +21,70 @@ interface AddressData {
 const PINK = "#FF3B66";
 const PINK_HOVER = "#E6345C";
 
+const shippingOptions = [
+  { id: "full", name: "Frete Grátis", time: "Entrega em 10 a 12 dias", price: 0, logo: fullLogo },
+  { id: "jadlog", name: "JADLOG", time: "Entrega em até 5 dias úteis", price: 15.90, logo: jadlogLogo },
+  { id: "sedex", name: "SEDEX 12", time: "Entrega de 12h a 24h", price: 29.90, logo: correiosLogo },
+];
+
+const orderBumps = [
+  { 
+    id: "canetas", 
+    name: "+2 Canetas Aplicadoras Premium", 
+    description: "Continue seu tratamento sem interrupções",
+    oldPrice: 129.90,
+    price: 89.90, 
+    discount: 31,
+    badge: "MAIS VENDIDO",
+    image: canetasExtras 
+  },
+  { 
+    id: "kit", 
+    name: "Kit Transporte Refrigerado", 
+    description: "Bolsa térmica para levar aonde for",
+    oldPrice: 49.90,
+    price: 29.90, 
+    discount: 40,
+    image: kitTransporte 
+  },
+  { 
+    id: "aula", 
+    name: "Aula Exclusiva de Aplicação", 
+    description: "Aprenda a aplicar como um profissional",
+    oldPrice: 39.90,
+    price: 19.90, 
+    discount: 50,
+    image: aulaAplicacao 
+  },
+];
+
+// Format helpers
+const formatPhone = (value: string) => {
+  const nums = value.replace(/\D/g, "").slice(0, 11);
+  if (nums.length <= 2) return nums;
+  if (nums.length <= 7) return `(${nums.slice(0, 2)}) ${nums.slice(2)}`;
+  return `(${nums.slice(0, 2)}) ${nums.slice(2, 7)}-${nums.slice(7)}`;
+};
+
+const formatCPF = (value: string) => {
+  const nums = value.replace(/\D/g, "").slice(0, 11);
+  if (nums.length <= 3) return nums;
+  if (nums.length <= 6) return `${nums.slice(0, 3)}.${nums.slice(3)}`;
+  if (nums.length <= 9) return `${nums.slice(0, 3)}.${nums.slice(3, 6)}.${nums.slice(6)}`;
+  return `${nums.slice(0, 3)}.${nums.slice(3, 6)}.${nums.slice(6, 9)}-${nums.slice(9)}`;
+};
+
+const formatCEP = (value: string) => {
+  const nums = value.replace(/\D/g, "").slice(0, 8);
+  if (nums.length <= 5) return nums;
+  return `${nums.slice(0, 5)}-${nums.slice(5)}`;
+};
+
+const inputClass = "w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF3B66]/20 focus:border-[#FF3B66] transition-colors";
+
 const Checkout = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [cepLoading, setCepLoading] = useState(false);
   const [selectedShipping, setSelectedShipping] = useState("");
@@ -45,70 +105,10 @@ const Checkout = () => {
   });
 
   const price = 67.90;
-  
-  const shippingOptions = [
-    { id: "full", name: "Frete Grátis", time: "Entrega em 10 a 12 dias", price: 0, logo: fullLogo },
-    { id: "jadlog", name: "JADLOG", time: "Entrega em até 5 dias úteis", price: 15.90, logo: jadlogLogo },
-    { id: "sedex", name: "SEDEX 12", time: "Entrega de 12h a 24h", price: 29.90, logo: correiosLogo },
-  ];
-
-  const orderBumps = [
-    { 
-      id: "canetas", 
-      name: "+2 Canetas Aplicadoras Premium", 
-      description: "Continue seu tratamento sem interrupções",
-      oldPrice: 129.90,
-      price: 89.90, 
-      discount: 31,
-      badge: "MAIS VENDIDO",
-      image: canetasExtras 
-    },
-    { 
-      id: "kit", 
-      name: "Kit Transporte Refrigerado", 
-      description: "Bolsa térmica para levar aonde for",
-      oldPrice: 49.90,
-      price: 29.90, 
-      discount: 40,
-      image: kitTransporte 
-    },
-    { 
-      id: "aula", 
-      name: "Aula Exclusiva de Aplicação", 
-      description: "Aprenda a aplicar como um profissional",
-      oldPrice: 39.90,
-      price: 19.90, 
-      discount: 50,
-      image: aulaAplicacao 
-    },
-  ];
-
   const selectedShippingData = shippingOptions.find(s => s.id === selectedShipping);
   const shippingPrice = selectedShippingData?.price || 0;
   const bumpsTotal = orderBumps.filter(b => selectedBumps.includes(b.id)).reduce((sum, b) => sum + b.price, 0);
   const total = (price * quantity) + shippingPrice + bumpsTotal;
-
-  // Format helpers
-  const formatPhone = (value: string) => {
-    const nums = value.replace(/\D/g, "").slice(0, 11);
-    if (nums.length <= 2) return nums;
-    if (nums.length <= 7) return `(${nums.slice(0, 2)}) ${nums.slice(2)}`;
-    return `(${nums.slice(0, 2)}) ${nums.slice(2, 7)}-${nums.slice(7)}`;
-  };
-
-  const formatCPF = (value: string) => {
-    const nums = value.replace(/\D/g, "").slice(0, 11);
-    if (nums.length <= 3) return nums;
-    if (nums.length <= 6) return `${nums.slice(0, 3)}.${nums.slice(3)}`;
-    if (nums.length <= 9) return `${nums.slice(0, 3)}.${nums.slice(3, 6)}.${nums.slice(6)}`;
-    return `${nums.slice(0, 3)}.${nums.slice(3, 6)}.${nums.slice(6, 9)}-${nums.slice(9)}`;
-  };
-
-  const formatCEP = (value: string) => {
-    const nums = value.replace(/\D/g, "").slice(0, 8);
-    if (nums.length <= 5) return nums;
-    return `${nums.slice(0, 5)}-${nums.slice(5)}`;
-  };
 
   // Fetch address from CEP
   const fetchAddress = async (cep: string) => {
@@ -173,15 +173,12 @@ const Checkout = () => {
     formData.uf.length === 2 &&
     selectedShipping !== "";
 
-  const goToStep = useCallback((newStep: number) => {
-    if (newStep === step) return;
-    setIsTransitioning(true);
-    setTimeout(() => {
+  const goToStep = (newStep: number) => {
+    if (newStep !== step) {
       setStep(newStep);
-      setIsTransitioning(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 150);
-  }, [step]);
+    }
+  };
 
   const handleContinue = () => {
     if (step === 1 && isStep1Valid) {
@@ -200,88 +197,48 @@ const Checkout = () => {
   };
 
   const handlePay = () => {
-    // Navigate to payment/PIX screen
     console.log("Processing payment", { formData, selectedShipping, selectedBumps, total });
   };
-
-  // Trust Badges Component
-  const TrustBadges = () => (
-    <div className="flex items-center justify-center gap-6 mt-6 px-4">
-      <div className="flex items-center gap-1.5 text-gray-500">
-        <ShieldCheck className="w-4 h-4 text-[#2DB573]" />
-        <span className="text-xs font-medium">Compra Segura</span>
-      </div>
-      <div className="flex items-center gap-1.5 text-gray-500">
-        <Lock className="w-4 h-4 text-gray-400" />
-        <span className="text-xs font-medium">SSL Ativo</span>
-      </div>
-      <div className="flex items-center gap-1.5 text-gray-500">
-        <ShieldCheck className="w-4 h-4 text-[#2DB573]" />
-        <span className="text-xs font-medium">Garantia</span>
-      </div>
-    </div>
-  );
-
-  // Wrapper com transição
-  const PageWrapper = ({ children }: { children: React.ReactNode }) => (
-    <div 
-      className={`min-h-screen bg-[#F8F8F8] flex flex-col transition-all duration-200 ease-out ${
-        isTransitioning ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'
-      }`}
-    >
-      {children}
-    </div>
-  );
-
-  // Product Card Component
-  const ProductCard = ({ viewers = 27 }: { viewers?: number }) => (
-    <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm transition-all duration-200">
-      <div className="flex items-start gap-3">
-        <img src={mounjaroBox} alt="Mounjaro" className="w-20 h-20 object-contain rounded-lg bg-gray-50" />
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900 leading-tight">Mounjaro™ 5 mg – Tirzepatida (caneta...</p>
-          <p className="text-base font-bold text-[#2DB573] mt-1">R$ {price.toFixed(2).replace(".", ",")}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => setQuantity(Math.max(1, quantity - 1))} 
-            className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50 active:scale-95 transition-all duration-150"
-          >
-            <Minus className="w-4 h-4" />
-          </button>
-          <span className="w-5 text-center font-medium text-gray-900">{quantity}</span>
-          <button 
-            onClick={() => setQuantity(quantity + 1)} 
-            className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50 active:scale-95 transition-all duration-150"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-      <div className="flex items-center gap-1.5 mt-3 text-[#2DB573]">
-        <Users className="w-4 h-4" />
-        <span className="text-sm font-medium">{viewers} comprando agora</span>
-      </div>
-    </div>
-  );
 
   // Step 1: Personal Data
   if (step === 1) {
     return (
-      <PageWrapper>
+      <div className="min-h-screen bg-[#F8F8F8] flex flex-col">
         <header className="bg-white px-4 py-3 flex items-center gap-3 border-b border-gray-100">
-          <button onClick={handleBack} className="p-1 -ml-1 active:scale-95 transition-transform" aria-label="Voltar">
+          <button onClick={handleBack} className="p-1 -ml-1" aria-label="Voltar">
             <ArrowLeft className="w-6 h-6 text-gray-700" strokeWidth={1.5} />
           </button>
           <h1 className="text-lg font-semibold text-gray-900">Dados pessoais</h1>
         </header>
 
         <div className="h-1 bg-gray-200 flex">
-          <div className="w-1/3 transition-all duration-500 ease-out" style={{ backgroundColor: PINK }} />
+          <div className="w-1/3" style={{ backgroundColor: PINK }} />
         </div>
 
         <div className="flex-1 overflow-auto pb-28">
-          <ProductCard viewers={27} />
+          {/* Product Card */}
+          <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
+            <div className="flex items-start gap-3">
+              <img src={mounjaroBox} alt="Mounjaro" className="w-20 h-20 object-contain rounded-lg bg-gray-50" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 leading-tight">Mounjaro™ 5 mg – Tirzepatida (caneta...</p>
+                <p className="text-base font-bold text-[#2DB573] mt-1">R$ {price.toFixed(2).replace(".", ",")}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="w-5 text-center font-medium text-gray-900">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 mt-3 text-[#2DB573]">
+              <Users className="w-4 h-4" />
+              <span className="text-sm font-medium">27 comprando agora</span>
+            </div>
+          </div>
 
           {/* Form */}
           <div className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm">
@@ -292,70 +249,127 @@ const Checkout = () => {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">Nome completo</label>
-                <input type="text" placeholder="Digite seu nome" value={formData.nome} onChange={e => handleChange("nome", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF3B66]/20 focus:border-[#FF3B66] transition-all duration-200" />
+                <input 
+                  type="text" 
+                  placeholder="Digite seu nome" 
+                  value={formData.nome} 
+                  onChange={e => handleChange("nome", e.target.value)} 
+                  className={inputClass} 
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">E-mail</label>
-                <input type="email" placeholder="seu@email.com" value={formData.email} onChange={e => handleChange("email", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF3B66]/20 focus:border-[#FF3B66] transition-all duration-200" />
+                <input 
+                  type="email" 
+                  placeholder="seu@email.com" 
+                  value={formData.email} 
+                  onChange={e => handleChange("email", e.target.value)} 
+                  className={inputClass} 
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">Telefone</label>
-                <input type="tel" placeholder="(00) 00000-0000" value={formData.telefone} onChange={e => handleChange("telefone", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF3B66]/20 focus:border-[#FF3B66] transition-all duration-200" />
+                <input 
+                  type="tel" 
+                  placeholder="(00) 00000-0000" 
+                  value={formData.telefone} 
+                  onChange={e => handleChange("telefone", e.target.value)} 
+                  className={inputClass} 
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">CPF</label>
-                <input type="text" placeholder="000.000.000-00" value={formData.cpf} onChange={e => handleChange("cpf", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF3B66]/20 focus:border-[#FF3B66] transition-all duration-200" />
+                <input 
+                  type="text" 
+                  placeholder="000.000.000-00" 
+                  value={formData.cpf} 
+                  onChange={e => handleChange("cpf", e.target.value)} 
+                  className={inputClass} 
+                />
               </div>
             </div>
           </div>
-          <TrustBadges />
+
+          {/* Trust Badges */}
+          <div className="flex items-center justify-center gap-6 mt-6 px-4">
+            <div className="flex items-center gap-1.5 text-gray-500">
+              <ShieldCheck className="w-4 h-4 text-[#2DB573]" />
+              <span className="text-xs font-medium">Compra Segura</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-gray-500">
+              <Lock className="w-4 h-4 text-gray-400" />
+              <span className="text-xs font-medium">SSL Ativo</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-gray-500">
+              <ShieldCheck className="w-4 h-4 text-[#2DB573]" />
+              <span className="text-xs font-medium">Garantia</span>
+            </div>
+          </div>
         </div>
 
-        <div className="fixed inset-x-0 bottom-0 bg-white border-t border-gray-200 px-4 py-4 shadow-lg">
+        <div className="fixed inset-x-0 bottom-0 bg-white border-t border-gray-200 px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-500">Subtotal</p>
-              <p className="text-xl font-bold transition-all duration-200" style={{ color: PINK }}>R$ {(price * quantity).toFixed(2).replace(".", ",")}</p>
+              <p className="text-xl font-bold" style={{ color: PINK }}>R$ {(price * quantity).toFixed(2).replace(".", ",")}</p>
             </div>
             <button 
               onClick={handleContinue} 
               disabled={!isStep1Valid} 
-              className={`px-12 py-3.5 rounded-lg font-semibold text-base transition-all duration-200 active:scale-[0.98] ${
+              className={`px-12 py-3.5 rounded-lg font-semibold text-base transition-colors ${
                 isStep1Valid 
-                  ? "text-white shadow-lg hover:shadow-xl" 
+                  ? "text-white hover:opacity-90" 
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}
               style={isStep1Valid ? { backgroundColor: PINK } : {}}
-              onMouseEnter={e => isStep1Valid && (e.currentTarget.style.backgroundColor = PINK_HOVER)}
-              onMouseLeave={e => isStep1Valid && (e.currentTarget.style.backgroundColor = PINK)}
             >
               Continuar
             </button>
           </div>
         </div>
-      </PageWrapper>
+      </div>
     );
   }
 
   // Step 2: Address
   if (step === 2) {
-    const inputClass = "w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF3B66]/20 focus:border-[#FF3B66] transition-all duration-200";
-    
     return (
-      <PageWrapper>
+      <div className="min-h-screen bg-[#F8F8F8] flex flex-col">
         <header className="bg-white px-4 py-3 flex items-center gap-3 border-b border-gray-100">
-          <button onClick={handleBack} className="p-1 -ml-1 active:scale-95 transition-transform" aria-label="Voltar">
+          <button onClick={handleBack} className="p-1 -ml-1" aria-label="Voltar">
             <ArrowLeft className="w-6 h-6 text-gray-700" strokeWidth={1.5} />
           </button>
           <h1 className="text-lg font-semibold text-gray-900">Endereço</h1>
         </header>
 
         <div className="h-1 bg-gray-200 flex">
-          <div className="w-2/3 transition-all duration-500 ease-out" style={{ backgroundColor: PINK }} />
+          <div className="w-2/3" style={{ backgroundColor: PINK }} />
         </div>
 
         <div className="flex-1 overflow-auto pb-28">
-          <ProductCard viewers={29} />
+          {/* Product Card */}
+          <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
+            <div className="flex items-start gap-3">
+              <img src={mounjaroBox} alt="Mounjaro" className="w-20 h-20 object-contain rounded-lg bg-gray-50" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 leading-tight">Mounjaro™ 5 mg – Tirzepatida (caneta...</p>
+                <p className="text-base font-bold text-[#2DB573] mt-1">R$ {price.toFixed(2).replace(".", ",")}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="w-5 text-center font-medium text-gray-900">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 mt-3 text-[#2DB573]">
+              <Users className="w-4 h-4" />
+              <span className="text-sm font-medium">29 comprando agora</span>
+            </div>
+          </div>
 
           {/* Address Form */}
           <div className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm">
@@ -367,36 +381,78 @@ const Checkout = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">CEP</label>
                 <div className="relative">
-                  <input type="text" placeholder="00000-000" value={formData.cep} onChange={e => handleChange("cep", e.target.value)} className={inputClass} />
+                  <input 
+                    type="text" 
+                    placeholder="00000-000" 
+                    value={formData.cep} 
+                    onChange={e => handleChange("cep", e.target.value)} 
+                    className={inputClass} 
+                  />
                   {cepLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 animate-spin text-gray-400" />}
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">Rua</label>
-                <input type="text" placeholder="Nome da rua" value={formData.rua} onChange={e => handleChange("rua", e.target.value)} className={inputClass} />
+                <input 
+                  type="text" 
+                  placeholder="Nome da rua" 
+                  value={formData.rua} 
+                  onChange={e => handleChange("rua", e.target.value)} 
+                  className={inputClass} 
+                />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-1.5">Número</label>
-                  <input type="text" placeholder="Nº" value={formData.numero} onChange={e => handleChange("numero", e.target.value)} className={inputClass} />
+                  <input 
+                    type="text" 
+                    placeholder="Nº" 
+                    value={formData.numero} 
+                    onChange={e => handleChange("numero", e.target.value)} 
+                    className={inputClass} 
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-1.5">Complemento</label>
-                  <input type="text" placeholder="Opcional" value={formData.complemento} onChange={e => handleChange("complemento", e.target.value)} className={inputClass} />
+                  <input 
+                    type="text" 
+                    placeholder="Opcional" 
+                    value={formData.complemento} 
+                    onChange={e => handleChange("complemento", e.target.value)} 
+                    className={inputClass} 
+                  />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">Bairro</label>
-                <input type="text" placeholder="Nome do bairro" value={formData.bairro} onChange={e => handleChange("bairro", e.target.value)} className={inputClass} />
+                <input 
+                  type="text" 
+                  placeholder="Nome do bairro" 
+                  value={formData.bairro} 
+                  onChange={e => handleChange("bairro", e.target.value)} 
+                  className={inputClass} 
+                />
               </div>
               <div className="grid grid-cols-[1fr,80px] gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-1.5">Cidade</label>
-                  <input type="text" placeholder="Cidade" value={formData.cidade} onChange={e => handleChange("cidade", e.target.value)} className={inputClass} />
+                  <input 
+                    type="text" 
+                    placeholder="Cidade" 
+                    value={formData.cidade} 
+                    onChange={e => handleChange("cidade", e.target.value)} 
+                    className={inputClass} 
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-1.5">UF</label>
-                  <input type="text" placeholder="UF" value={formData.uf} onChange={e => handleChange("uf", e.target.value)} className={inputClass} />
+                  <input 
+                    type="text" 
+                    placeholder="UF" 
+                    value={formData.uf} 
+                    onChange={e => handleChange("uf", e.target.value)} 
+                    className={inputClass} 
+                  />
                 </div>
               </div>
             </div>
@@ -413,12 +469,12 @@ const Checkout = () => {
                 <button 
                   key={option.id} 
                   onClick={() => setSelectedShipping(option.id)} 
-                  className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all duration-200 active:scale-[0.99] ${
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-colors ${
                     selectedShipping === option.id ? "border-[#2DB573] bg-[#F0FDF4]" : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${selectedShipping === option.id ? "border-[#2DB573]" : "border-gray-300"}`}>
-                    {selectedShipping === option.id && <div className="w-2.5 h-2.5 rounded-full bg-[#2DB573] animate-scale-in" />}
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedShipping === option.id ? "border-[#2DB573]" : "border-gray-300"}`}>
+                    {selectedShipping === option.id && <div className="w-2.5 h-2.5 rounded-full bg-[#2DB573]" />}
                   </div>
                   <img src={option.logo} alt={option.name} className="h-6 w-auto object-contain" />
                   <div className="flex-1 text-left">
@@ -432,47 +488,60 @@ const Checkout = () => {
               ))}
             </div>
           </div>
-          <TrustBadges />
+
+          {/* Trust Badges */}
+          <div className="flex items-center justify-center gap-6 mt-6 px-4">
+            <div className="flex items-center gap-1.5 text-gray-500">
+              <ShieldCheck className="w-4 h-4 text-[#2DB573]" />
+              <span className="text-xs font-medium">Compra Segura</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-gray-500">
+              <Lock className="w-4 h-4 text-gray-400" />
+              <span className="text-xs font-medium">SSL Ativo</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-gray-500">
+              <ShieldCheck className="w-4 h-4 text-[#2DB573]" />
+              <span className="text-xs font-medium">Garantia</span>
+            </div>
+          </div>
         </div>
 
-        <div className="fixed inset-x-0 bottom-0 bg-white border-t border-gray-200 px-4 py-4 shadow-lg">
+        <div className="fixed inset-x-0 bottom-0 bg-white border-t border-gray-200 px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-500">Subtotal</p>
-              <p className="text-xl font-bold transition-all duration-200" style={{ color: PINK }}>R$ {((price * quantity) + shippingPrice).toFixed(2).replace(".", ",")}</p>
+              <p className="text-xl font-bold" style={{ color: PINK }}>R$ {((price * quantity) + shippingPrice).toFixed(2).replace(".", ",")}</p>
             </div>
             <button 
               onClick={handleContinue} 
               disabled={!isStep2Valid} 
-              className={`px-12 py-3.5 rounded-lg font-semibold text-base transition-all duration-200 active:scale-[0.98] ${
+              className={`px-12 py-3.5 rounded-lg font-semibold text-base transition-colors ${
                 isStep2Valid 
-                  ? "text-white shadow-lg hover:shadow-xl" 
+                  ? "text-white hover:opacity-90" 
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}
               style={isStep2Valid ? { backgroundColor: PINK } : {}}
-              onMouseEnter={e => isStep2Valid && (e.currentTarget.style.backgroundColor = PINK_HOVER)}
-              onMouseLeave={e => isStep2Valid && (e.currentTarget.style.backgroundColor = PINK)}
             >
               Continuar
             </button>
           </div>
         </div>
-      </PageWrapper>
+      </div>
     );
   }
 
   // Step 3: Confirmation
   if (step === 3) {
     return (
-      <PageWrapper>
+      <div className="min-h-screen bg-[#F8F8F8] flex flex-col">
         <header className="bg-white px-4 py-3 flex items-center gap-3 border-b border-gray-100">
-          <button onClick={handleBack} className="p-1 -ml-1 active:scale-95 transition-transform" aria-label="Voltar">
+          <button onClick={handleBack} className="p-1 -ml-1" aria-label="Voltar">
             <ArrowLeft className="w-6 h-6 text-gray-700" strokeWidth={1.5} />
           </button>
           <h1 className="text-lg font-semibold text-gray-900">Confirmação</h1>
         </header>
 
-        <div className="h-1 transition-all duration-500 ease-out" style={{ backgroundColor: PINK }} />
+        <div className="h-1" style={{ backgroundColor: PINK }} />
 
         <div className="flex-1 overflow-auto pb-28">
           {/* Itens do pedido */}
@@ -485,17 +554,11 @@ const Checkout = () => {
                 <p className="text-base font-bold text-[#2DB573] mt-1">R$ {price.toFixed(2).replace(".", ",")}</p>
               </div>
               <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))} 
-                  className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50 active:scale-95 transition-all duration-150"
-                >
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
                   <Minus className="w-4 h-4" />
                 </button>
                 <span className="w-5 text-center font-medium text-gray-900">{quantity}</span>
-                <button 
-                  onClick={() => setQuantity(quantity + 1)} 
-                  className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50 active:scale-95 transition-all duration-150"
-                >
+                <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
@@ -505,7 +568,7 @@ const Checkout = () => {
           {/* Comprador - dados da etapa 1 */}
           <button 
             onClick={() => goToStep(1)} 
-            className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm w-[calc(100%-2rem)] text-left flex items-center justify-between hover:bg-gray-50 active:scale-[0.99] transition-all duration-150"
+            className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm w-[calc(100%-2rem)] text-left flex items-center justify-between hover:bg-gray-50"
           >
             <div>
               <h2 className="text-sm font-semibold text-gray-900 mb-1">Comprador</h2>
@@ -518,7 +581,7 @@ const Checkout = () => {
           {/* Endereço de entrega - dados da etapa 2 */}
           <button 
             onClick={() => goToStep(2)} 
-            className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm w-[calc(100%-2rem)] text-left flex items-center justify-between hover:bg-gray-50 active:scale-[0.99] transition-all duration-150"
+            className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm w-[calc(100%-2rem)] text-left flex items-center justify-between hover:bg-gray-50"
           >
             <div>
               <h2 className="text-sm font-semibold text-gray-900 mb-1">Endereço de entrega</h2>
@@ -531,12 +594,10 @@ const Checkout = () => {
           {/* Forma de entrega - dados da etapa 2 */}
           <button 
             onClick={() => goToStep(2)} 
-            className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm w-[calc(100%-2rem)] text-left flex items-center justify-between hover:bg-gray-50 active:scale-[0.99] transition-all duration-150"
+            className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm w-[calc(100%-2rem)] text-left flex items-center justify-between hover:bg-gray-50"
           >
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <h2 className="text-sm font-semibold text-gray-900">Forma de entrega</h2>
-              </div>
+              <h2 className="text-sm font-semibold text-gray-900 mb-1">Forma de entrega</h2>
               <p className="text-sm text-gray-600">{selectedShippingData?.name}</p>
               <p className="text-sm text-gray-500">{selectedShippingData?.time}</p>
             </div>
@@ -556,7 +617,7 @@ const Checkout = () => {
                 <button
                   key={bump.id}
                   onClick={() => toggleBump(bump.id)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all duration-200 active:scale-[0.99] ${
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-colors ${
                     selectedBumps.includes(bump.id) ? "border-[#2DB573] bg-[#F0FDF4]" : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -577,7 +638,7 @@ const Checkout = () => {
                       <span className="text-[10px] font-bold text-[#2DB573] bg-[#E8F5E9] px-1.5 py-0.5 rounded">-{bump.discount}%</span>
                     </div>
                   </div>
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                     selectedBumps.includes(bump.id) ? "border-[#2DB573] bg-[#2DB573]" : "border-gray-300"
                   }`}>
                     {selectedBumps.includes(bump.id) && <Check className="w-4 h-4 text-white" />}
@@ -602,27 +663,39 @@ const Checkout = () => {
             </div>
           </div>
 
-          <TrustBadges />
+          {/* Trust Badges */}
+          <div className="flex items-center justify-center gap-6 mt-6 px-4">
+            <div className="flex items-center gap-1.5 text-gray-500">
+              <ShieldCheck className="w-4 h-4 text-[#2DB573]" />
+              <span className="text-xs font-medium">Compra Segura</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-gray-500">
+              <Lock className="w-4 h-4 text-gray-400" />
+              <span className="text-xs font-medium">SSL Ativo</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-gray-500">
+              <ShieldCheck className="w-4 h-4 text-[#2DB573]" />
+              <span className="text-xs font-medium">Garantia</span>
+            </div>
+          </div>
         </div>
 
-        <div className="fixed inset-x-0 bottom-0 bg-white border-t border-gray-200 px-4 py-4 shadow-lg">
+        <div className="fixed inset-x-0 bottom-0 bg-white border-t border-gray-200 px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-500">Total</p>
-              <p className="text-xl font-bold transition-all duration-200" style={{ color: PINK }}>R$ {total.toFixed(2).replace(".", ",")}</p>
+              <p className="text-xl font-bold" style={{ color: PINK }}>R$ {total.toFixed(2).replace(".", ",")}</p>
             </div>
             <button 
               onClick={handlePay} 
-              className="px-16 py-3.5 rounded-lg font-semibold text-base text-white shadow-lg hover:shadow-xl active:scale-[0.98] transition-all duration-200"
+              className="px-16 py-3.5 rounded-lg font-semibold text-base text-white hover:opacity-90 transition-opacity"
               style={{ backgroundColor: PINK }}
-              onMouseEnter={e => (e.currentTarget.style.backgroundColor = PINK_HOVER)}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = PINK)}
             >
               Pagar
             </button>
           </div>
         </div>
-      </PageWrapper>
+      </div>
     );
   }
 
