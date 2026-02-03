@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Lock, ShieldCheck, Users, Minus, Plus, Truck, Loader2, ChevronRight, Check } from "lucide-react";
+import { ArrowLeft, Lock, ShieldCheck, Users, Minus, Plus, Truck, Loader2, ChevronRight, Check, Copy, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import mounjaroBox from "@/assets/checkout/mounjaro-box.png";
 import fullLogo from "@/assets/checkout/full-logo.png";
@@ -89,6 +90,9 @@ const Checkout = () => {
   const [cepLoading, setCepLoading] = useState(false);
   const [selectedShipping, setSelectedShipping] = useState("");
   const [selectedBumps, setSelectedBumps] = useState<string[]>([]);
+  const [pixLoading, setPixLoading] = useState(false);
+  const [showPixModal, setShowPixModal] = useState(false);
+  const [pixUrl, setPixUrl] = useState("");
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -196,8 +200,43 @@ const Checkout = () => {
     }
   };
 
-  const handlePay = () => {
-    console.log("Processing payment", { formData, selectedShipping, selectedBumps, total });
+  const handlePay = async () => {
+    if (pixLoading) return;
+    
+    setPixLoading(true);
+    try {
+      const identifier = `order_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+      
+      const { data, error } = await supabase.functions.invoke('generate-pix', {
+        body: {
+          amount: total,
+          customer_name: formData.nome,
+          customer_email: formData.email,
+          customer_cpf: formData.cpf.replace(/\D/g, ''),
+          customer_phone: formData.telefone.replace(/\D/g, ''),
+          details: `Mounjaro 5mg x${quantity}${selectedBumps.length > 0 ? ' + ' + selectedBumps.length + ' adicionais' : ''}`,
+          identifier,
+        },
+      });
+
+      if (error) {
+        console.error('Erro ao gerar PIX:', error);
+        alert('Erro ao gerar PIX. Tente novamente.');
+        return;
+      }
+
+      if (data?.success && data?.checkout_url) {
+        setPixUrl(data.checkout_url);
+        setShowPixModal(true);
+      } else {
+        alert(data?.error || 'Erro ao gerar PIX. Tente novamente.');
+      }
+    } catch (err) {
+      console.error('Erro ao processar pagamento:', err);
+      alert('Erro ao processar pagamento. Tente novamente.');
+    } finally {
+      setPixLoading(false);
+    }
   };
 
   // Step 1: Personal Data
@@ -688,13 +727,73 @@ const Checkout = () => {
             </div>
             <button 
               onClick={handlePay} 
-              className="px-16 py-3.5 rounded-lg font-semibold text-base text-white hover:opacity-90 transition-opacity"
+              disabled={pixLoading}
+              className="px-16 py-3.5 rounded-lg font-semibold text-base text-white hover:opacity-90 transition-opacity disabled:opacity-70 flex items-center gap-2"
               style={{ backgroundColor: PINK }}
             >
-              Pagar
+              {pixLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Gerando PIX...
+                </>
+              ) : (
+                'Pagar'
+              )}
             </button>
           </div>
         </div>
+
+        {/* PIX Modal */}
+        {showPixModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+            <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between p-4 border-b border-gray-100">
+                <div className="flex items-center gap-2">
+                  <img src={pixLogo} alt="PIX" className="h-6 w-auto" />
+                  <h2 className="text-lg font-semibold text-gray-900">Pagamento PIX</h2>
+                </div>
+                <button 
+                  onClick={() => setShowPixModal(false)}
+                  className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+              
+              <div className="p-6">
+                <p className="text-center text-gray-600 mb-4">
+                  Você será redirecionado para a página de pagamento PIX.
+                </p>
+                
+                <div className="bg-gray-50 rounded-xl p-4 mb-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-500">Valor a pagar:</span>
+                    <span className="text-xl font-bold" style={{ color: PINK }}>
+                      R$ {total.toFixed(2).replace(".", ",")}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-400 text-center">
+                    O PIX expira em 30 minutos
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    window.open(pixUrl, '_blank');
+                  }}
+                  className="w-full py-4 rounded-xl font-semibold text-base text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                  style={{ backgroundColor: PINK }}
+                >
+                  Abrir Pagamento PIX
+                </button>
+
+                <p className="text-xs text-center text-gray-400 mt-4">
+                  Após o pagamento, você será redirecionado automaticamente
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
