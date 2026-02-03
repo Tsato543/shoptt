@@ -1,7 +1,46 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { CreditCard, Info, HelpCircle } from "lucide-react";
 import tiktokLogo from "@/assets/tiktok-shop.png";
+import PixModal from "@/components/PixModal";
+
+const PINK = "#ff3870";
+const AMOUNT = 26.75;
+
+interface CustomerData {
+  name: string;
+  email: string;
+  cpf: string;
+  phone: string;
+}
 
 const Upsell2 = () => {
+  const navigate = useNavigate();
+  const [showPixModal, setShowPixModal] = useState(false);
+  const [customerData, setCustomerData] = useState<CustomerData>({
+    name: 'Cliente',
+    email: 'cliente@email.com',
+    cpf: '00000000000',
+    phone: '00000000000',
+  });
+
+  useEffect(() => {
+    const stored = localStorage.getItem('customerData');
+    if (stored) {
+      try {
+        const data = JSON.parse(stored);
+        setCustomerData(data);
+      } catch {
+        // Mantém dados default
+      }
+    }
+  }, []);
+
+  const handleSuccess = () => {
+    setShowPixModal(false);
+    navigate('/up3');
+  };
+
   return (
     <div className="min-h-screen bg-secondary/30 flex flex-col">
       {/* Header */}
@@ -34,7 +73,7 @@ const Upsell2 = () => {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground text-sm">Valor da TENF:</span>
-              <span className="text-primary font-semibold">R$ 26,75</span>
+              <span className="text-primary font-semibold">R$ {AMOUNT.toFixed(2).replace('.', ',')}</span>
             </div>
           </div>
         </div>
@@ -46,16 +85,17 @@ const Upsell2 = () => {
             <h2 className="text-lg font-bold text-foreground">Pagamento Pendente</h2>
           </div>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            Seu pedido está quase pronto para ser enviado! Para finalizar o processo, precisamos que você realize o pagamento da <strong className="text-foreground">TENF</strong> (Taxa de Emissão da Nota Fiscal) no valor de R$ 26,75.
+            Seu pedido está quase pronto para ser enviado! Para finalizar o processo, precisamos que você realize o pagamento da <strong className="text-foreground">TENF</strong> (Taxa de Emissão da Nota Fiscal) no valor de R$ {AMOUNT.toFixed(2).replace('.', ',')}.
           </p>
         </div>
 
-        {/* Botão - será integrado depois */}
+        {/* Botão */}
         <button
+          onClick={() => setShowPixModal(true)}
           className="w-full font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide text-white"
-          style={{ backgroundColor: '#ff3870' }}
+          style={{ backgroundColor: PINK }}
         >
-          Pagar TENF - R$ 26,75
+          Pagar TENF - R$ {AMOUNT.toFixed(2).replace('.', ',')}
         </button>
 
         {/* Por que preciso pagar */}
@@ -69,6 +109,20 @@ const Upsell2 = () => {
           </p>
         </div>
       </div>
+
+      {/* PIX Modal */}
+      <PixModal
+        isOpen={showPixModal}
+        onClose={() => setShowPixModal(false)}
+        amount={AMOUNT}
+        title="TENF - Taxa de Nota Fiscal"
+        customerName={customerData.name}
+        customerEmail={customerData.email}
+        customerCpf={customerData.cpf}
+        customerPhone={customerData.phone}
+        details="TENF Taxa de Emissão"
+        onSuccess={handleSuccess}
+      />
     </div>
   );
 };

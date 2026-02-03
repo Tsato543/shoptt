@@ -201,6 +201,14 @@ const Checkout = () => {
   const handlePay = async () => {
     if (pixLoading) return;
     
+    // Salvar dados do cliente no localStorage para uso nos upsells
+    localStorage.setItem('customerData', JSON.stringify({
+      name: formData.nome,
+      email: formData.email,
+      cpf: formData.cpf,
+      phone: formData.telefone,
+    }));
+    
     setPixLoading(true);
     try {
       const identifier = `order_${Date.now()}_${Math.random().toString(36).substring(7)}`;
