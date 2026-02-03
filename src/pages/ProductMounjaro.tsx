@@ -32,10 +32,10 @@ const ProductMounjaro = () => {
     { src: foto4, alt: "Mounjaro™️ 5 mg — Produto na mão" },
   ];
 
-  // Track ViewContent on mount
+  // Track ViewContent on mount - using actual checkout price
   useEffect(() => {
     trackPageView();
-    trackViewContent('mounjaro-5mg', 'Mounjaro™️ 5 mg — Caneta injetável', 197.00);
+    trackViewContent('mounjaro-5mg', 'Mounjaro™️ 5 mg — Caneta injetável', 67.90);
   }, []);
 
   // Countdown timer

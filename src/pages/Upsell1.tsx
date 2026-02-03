@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { trackPageView, trackViewContent } from "@/lib/tiktokPixel";
+import { trackPageView, trackViewContent, trackInitiateCheckout, trackAddPaymentInfo } from "@/lib/tiktokPixel";
 import tiktokLogo from "@/assets/tiktok-shop.png";
 import PixModal from "@/components/PixModal";
 
@@ -25,10 +25,11 @@ const Upsell1 = () => {
     phone: '00000000000',
   });
 
-  // Track page view
+  // Track page view and InitiateCheckout
   useEffect(() => {
     trackPageView();
     trackViewContent('upsell1', 'Emissão de NFe', AMOUNT);
+    trackInitiateCheckout('upsell1-nfe', 'Taxa de Emissão de NFe', AMOUNT);
   }, []);
 
   // Verifica se o usuário chegou aqui legitimamente (após pagamento aprovado)
@@ -94,7 +95,11 @@ const Upsell1 = () => {
 
         {/* Botão de pagamento */}
         <button
-          onClick={() => setShowPixModal(true)}
+          onClick={() => {
+            // Track AddPaymentInfo when clicking to pay
+            trackAddPaymentInfo('upsell1-nfe', 'Taxa de Emissão de NFe', AMOUNT);
+            setShowPixModal(true);
+          }}
           className="w-full font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg text-white flex items-center justify-center gap-2"
           style={{ backgroundColor: PINK }}
         >

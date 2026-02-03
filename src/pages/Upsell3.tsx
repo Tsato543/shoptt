@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Check, AlertTriangle, X, CreditCard } from "lucide-react";
-import { trackPageView, trackViewContent } from "@/lib/tiktokPixel";
+import { trackPageView, trackViewContent, trackInitiateCheckout, trackAddPaymentInfo } from "@/lib/tiktokPixel";
 import PixModal from "@/components/PixModal";
 
 const PINK = "#ff3870";
@@ -24,10 +24,11 @@ const Upsell3 = () => {
     phone: '00000000000',
   });
 
-  // Track page view
+  // Track page view and InitiateCheckout
   useEffect(() => {
     trackPageView();
     trackViewContent('upsell3', 'Correção ICMS', AMOUNT);
+    trackInitiateCheckout('upsell3-frete', 'Correção de Frete', AMOUNT);
   }, []);
 
   // Verifica se o usuário pagou o up2
@@ -99,7 +100,10 @@ const Upsell3 = () => {
           
           {/* Botão */}
           <button
-            onClick={() => setShowPixModal(true)}
+            onClick={() => {
+              trackAddPaymentInfo('upsell3-frete', 'Correção de Frete', AMOUNT);
+              setShowPixModal(true);
+            }}
             className="w-full font-bold py-4 px-6 rounded-xl text-base transition-colors shadow-lg uppercase tracking-wide flex items-center justify-center gap-2 mb-4 text-white"
             style={{ backgroundColor: PINK }}
           >

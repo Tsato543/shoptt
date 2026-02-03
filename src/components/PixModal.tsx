@@ -116,8 +116,9 @@ const PixModal = ({
 
         if (!error && data?.success && data?.status === 'approved') {
           setPaymentStatus('approved');
-          // Track CompletePayment
-          trackCompletePayment('upsell', title, amount);
+          // Track CompletePayment with proper content_id based on title
+          const contentId = title.toLowerCase().includes('nota fiscal') ? 'upsell1-nfe' : 'upsell';
+          trackCompletePayment(contentId, title, amount);
           setTimeout(() => {
             onSuccess();
           }, 2000);
