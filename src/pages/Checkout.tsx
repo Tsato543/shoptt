@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Lock, ShieldCheck, Users, Minus, Plus, Truck, Loader2 } from "lucide-react";
+import { ArrowLeft, Lock, ShieldCheck, Users, Minus, Plus, Truck, Loader2, ChevronRight, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import mounjaroBox from "@/assets/checkout/mounjaro-box.png";
 import fullLogo from "@/assets/checkout/full-logo.png";
 import jadlogLogo from "@/assets/checkout/jadlog-logo.png";
 import correiosLogo from "@/assets/checkout/correios-logo.png";
+import pixLogo from "@/assets/checkout/pix-logo.png";
+import canetasExtras from "@/assets/checkout/canetas-extras.webp";
+import kitTransporte from "@/assets/checkout/kit-transporte.webp";
+import aulaAplicacao from "@/assets/checkout/aula-aplicacao.webp";
 
 interface AddressData {
   logradouro: string;
@@ -19,14 +23,13 @@ const Checkout = () => {
   const [quantity, setQuantity] = useState(1);
   const [cepLoading, setCepLoading] = useState(false);
   const [selectedShipping, setSelectedShipping] = useState("");
+  const [selectedBumps, setSelectedBumps] = useState<string[]>([]);
 
   const [formData, setFormData] = useState({
-    // Step 1
     nome: "",
     email: "",
     telefone: "",
     cpf: "",
-    // Step 2
     cep: "",
     rua: "",
     numero: "",
@@ -37,16 +40,50 @@ const Checkout = () => {
   });
 
   const price = 67.90;
+  
   const shippingOptions = [
     { id: "full", name: "Frete Grátis", time: "Entrega em 10 a 12 dias", price: 0, logo: fullLogo },
     { id: "jadlog", name: "JADLOG", time: "Entrega em até 5 dias úteis", price: 15.90, logo: jadlogLogo },
     { id: "sedex", name: "SEDEX 12", time: "Entrega de 12h a 24h", price: 29.90, logo: correiosLogo },
   ];
 
-  const shippingPrice = shippingOptions.find(s => s.id === selectedShipping)?.price || 0;
-  const subtotal = (price * quantity) + shippingPrice;
+  const orderBumps = [
+    { 
+      id: "canetas", 
+      name: "+2 Canetas Aplicadoras Premium", 
+      description: "Continue seu tratamento sem interrupções",
+      oldPrice: 129.90,
+      price: 89.90, 
+      discount: 31,
+      badge: "MAIS VENDIDO",
+      image: canetasExtras 
+    },
+    { 
+      id: "kit", 
+      name: "Kit Transporte Refrigerado", 
+      description: "Bolsa térmica para levar aonde for",
+      oldPrice: 49.90,
+      price: 29.90, 
+      discount: 40,
+      image: kitTransporte 
+    },
+    { 
+      id: "aula", 
+      name: "Aula Exclusiva de Aplicação", 
+      description: "Aprenda a aplicar como um profissional",
+      oldPrice: 39.90,
+      price: 19.90, 
+      discount: 50,
+      image: aulaAplicacao 
+    },
+  ];
 
-  // Format phone
+  const selectedShippingData = shippingOptions.find(s => s.id === selectedShipping);
+  const shippingPrice = selectedShippingData?.price || 0;
+  const bumpsTotal = orderBumps.filter(b => selectedBumps.includes(b.id)).reduce((sum, b) => sum + b.price, 0);
+  const total = (price * quantity) + shippingPrice + bumpsTotal;
+
+  // Format helpers
   const formatPhone = (value: string) => {
     const nums = value.replace(/\D/g, "").slice(0, 11);
     if (nums.length <= 2) return nums;
@@ -54,7 +91,6 @@ const Checkout = () => {
     return `(${nums.slice(0, 2)}) ${nums.slice(2, 7)}-${nums.slice(7)}`;
   };
 
-  // Format CPF
   const formatCPF = (value: string) => {
     const nums = value.replace(/\D/g, "").slice(0, 11);
     if (nums.length <= 3) return nums;
@@ -63,7 +99,6 @@ const Checkout = () => {
     return `${nums.slice(0, 3)}.${nums.slice(3, 6)}.${nums.slice(6, 9)}-${nums.slice(9)}`;
   };
 
-  // Format CEP
   const formatCEP = (value: string) => {
     const nums = value.replace(/\D/g, "").slice(0, 8);
     if (nums.length <= 5) return nums;
@@ -96,7 +131,6 @@ const Checkout = () => {
     }
   };
 
-  // Auto-fetch address when CEP is complete
   useEffect(() => {
     const cleanCep = formData.cep.replace(/\D/g, "");
     if (cleanCep.length === 8) {
@@ -111,6 +145,12 @@ const Checkout = () => {
     if (field === "cep") formattedValue = formatCEP(value);
     if (field === "uf") formattedValue = value.toUpperCase().slice(0, 2);
     setFormData(prev => ({ ...prev, [field]: formattedValue }));
+  };
+
+  const toggleBump = (id: string) => {
+    setSelectedBumps(prev => 
+      prev.includes(id) ? prev.filter(b => b !== id) : [...prev, id]
+    );
   };
 
   const isStep1Valid = 
@@ -132,50 +172,14 @@ const Checkout = () => {
     if (step === 1 && isStep1Valid) {
       setStep(2);
     } else if (step === 2 && isStep2Valid) {
-      // Step 3 will be implemented
-      console.log("Continue to step 3", formData, selectedShipping);
+      setStep(3);
     }
   };
 
-  // Product Card Component
-  const ProductCard = () => (
-    <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
-      <div className="flex items-start gap-3">
-        <img
-          src={mounjaroBox}
-          alt="Mounjaro"
-          className="w-20 h-20 object-contain rounded-lg bg-gray-50"
-        />
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900 leading-tight">
-            Mounjaro™ 5 mg – Tirzepatida (caneta...
-          </p>
-          <p className="text-base font-bold text-[#2DB573] mt-1">
-            R$ {price.toFixed(2).replace(".", ",")}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50"
-          >
-            <Minus className="w-4 h-4" />
-          </button>
-          <span className="w-5 text-center font-medium text-gray-900">{quantity}</span>
-          <button
-            onClick={() => setQuantity(quantity + 1)}
-            className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-      <div className="flex items-center gap-1.5 mt-3 text-[#2DB573]">
-        <Users className="w-4 h-4" />
-        <span className="text-sm font-medium">{27 + Math.floor(Math.random() * 5)} comprando agora</span>
-      </div>
-    </div>
-  );
+  const handlePay = () => {
+    // Navigate to payment/PIX screen
+    console.log("Processing payment", { formData, selectedShipping, selectedBumps, total });
+  };
 
   // Trust Badges Component
   const TrustBadges = () => (
@@ -207,65 +211,59 @@ const Checkout = () => {
         </header>
 
         <div className="h-1 bg-gray-200 flex">
-          <div className="w-1/2 bg-[#E63946]" />
+          <div className="w-1/3 bg-[#E63946]" />
         </div>
 
         <div className="flex-1 overflow-auto pb-28">
-          <ProductCard />
+          {/* Product Card */}
+          <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
+            <div className="flex items-start gap-3">
+              <img src={mounjaroBox} alt="Mounjaro" className="w-20 h-20 object-contain rounded-lg bg-gray-50" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 leading-tight">Mounjaro™ 5 mg – Tirzepatida (caneta...</p>
+                <p className="text-base font-bold text-[#2DB573] mt-1">R$ {price.toFixed(2).replace(".", ",")}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="w-5 text-center font-medium text-gray-900">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 mt-3 text-[#2DB573]">
+              <Users className="w-4 h-4" />
+              <span className="text-sm font-medium">27 comprando agora</span>
+            </div>
+          </div>
 
+          {/* Form */}
           <div className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
               <Lock className="w-4 h-4 text-gray-500" />
               <span className="text-sm font-medium text-gray-700">Dados protegidos</span>
             </div>
-
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">Nome completo</label>
-                <input
-                  type="text"
-                  placeholder="Digite seu nome"
-                  value={formData.nome}
-                  onChange={e => handleChange("nome", e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition"
-                />
+                <input type="text" placeholder="Digite seu nome" value={formData.nome} onChange={e => handleChange("nome", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition" />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">E-mail</label>
-                <input
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={formData.email}
-                  onChange={e => handleChange("email", e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition"
-                />
+                <input type="email" placeholder="seu@email.com" value={formData.email} onChange={e => handleChange("email", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition" />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">Telefone</label>
-                <input
-                  type="tel"
-                  placeholder="(00) 00000-0000"
-                  value={formData.telefone}
-                  onChange={e => handleChange("telefone", e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition"
-                />
+                <input type="tel" placeholder="(00) 00000-0000" value={formData.telefone} onChange={e => handleChange("telefone", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition" />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">CPF</label>
-                <input
-                  type="text"
-                  placeholder="000.000.000-00"
-                  value={formData.cpf}
-                  onChange={e => handleChange("cpf", e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition"
-                />
+                <input type="text" placeholder="000.000.000-00" value={formData.cpf} onChange={e => handleChange("cpf", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition" />
               </div>
             </div>
           </div>
-
           <TrustBadges />
         </div>
 
@@ -273,19 +271,9 @@ const Checkout = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-500">Subtotal</p>
-              <p className="text-xl font-bold text-[#E63946]">
-                R$ {(price * quantity).toFixed(2).replace(".", ",")}
-              </p>
+              <p className="text-xl font-bold text-[#E63946]">R$ {(price * quantity).toFixed(2).replace(".", ",")}</p>
             </div>
-            <button
-              onClick={handleContinue}
-              disabled={!isStep1Valid}
-              className={`px-12 py-3.5 rounded-lg font-semibold text-base transition ${
-                isStep1Valid
-                  ? "bg-[#E63946] text-white hover:bg-[#D62B39]"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
-            >
+            <button onClick={handleContinue} disabled={!isStep1Valid} className={`px-12 py-3.5 rounded-lg font-semibold text-base transition ${isStep1Valid ? "bg-[#E63946] text-white hover:bg-[#D62B39]" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}>
               Continuar
             </button>
           </div>
@@ -306,11 +294,33 @@ const Checkout = () => {
         </header>
 
         <div className="h-1 bg-gray-200 flex">
-          <div className="w-3/4 bg-[#E63946]" />
+          <div className="w-2/3 bg-[#E63946]" />
         </div>
 
         <div className="flex-1 overflow-auto pb-28">
-          <ProductCard />
+          {/* Product Card */}
+          <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
+            <div className="flex items-start gap-3">
+              <img src={mounjaroBox} alt="Mounjaro" className="w-20 h-20 object-contain rounded-lg bg-gray-50" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 leading-tight">Mounjaro™ 5 mg – Tirzepatida (caneta...</p>
+                <p className="text-base font-bold text-[#2DB573] mt-1">R$ {price.toFixed(2).replace(".", ",")}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="w-5 text-center font-medium text-gray-900">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 mt-3 text-[#2DB573]">
+              <Users className="w-4 h-4" />
+              <span className="text-sm font-medium">29 comprando agora</span>
+            </div>
+          </div>
 
           {/* Address Form */}
           <div className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm">
@@ -318,89 +328,40 @@ const Checkout = () => {
               <Lock className="w-4 h-4 text-gray-500" />
               <span className="text-sm font-medium text-gray-700">Dados protegidos</span>
             </div>
-
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">CEP</label>
                 <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="00000-000"
-                    value={formData.cep}
-                    onChange={e => handleChange("cep", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition"
-                  />
-                  {cepLoading && (
-                    <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 animate-spin text-gray-400" />
-                  )}
+                  <input type="text" placeholder="00000-000" value={formData.cep} onChange={e => handleChange("cep", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition" />
+                  {cepLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 animate-spin text-gray-400" />}
                 </div>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">Rua</label>
-                <input
-                  type="text"
-                  placeholder="Nome da rua"
-                  value={formData.rua}
-                  onChange={e => handleChange("rua", e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition"
-                />
+                <input type="text" placeholder="Nome da rua" value={formData.rua} onChange={e => handleChange("rua", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition" />
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-1.5">Número</label>
-                  <input
-                    type="text"
-                    placeholder="Nº"
-                    value={formData.numero}
-                    onChange={e => handleChange("numero", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition"
-                  />
+                  <input type="text" placeholder="Nº" value={formData.numero} onChange={e => handleChange("numero", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-1.5">Complemento</label>
-                  <input
-                    type="text"
-                    placeholder="Opcional"
-                    value={formData.complemento}
-                    onChange={e => handleChange("complemento", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition"
-                  />
+                  <input type="text" placeholder="Opcional" value={formData.complemento} onChange={e => handleChange("complemento", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition" />
                 </div>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1.5">Bairro</label>
-                <input
-                  type="text"
-                  placeholder="Nome do bairro"
-                  value={formData.bairro}
-                  onChange={e => handleChange("bairro", e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition"
-                />
+                <input type="text" placeholder="Nome do bairro" value={formData.bairro} onChange={e => handleChange("bairro", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition" />
               </div>
-
               <div className="grid grid-cols-[1fr,80px] gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-1.5">Cidade</label>
-                  <input
-                    type="text"
-                    placeholder="Cidade"
-                    value={formData.cidade}
-                    onChange={e => handleChange("cidade", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition"
-                  />
+                  <input type="text" placeholder="Cidade" value={formData.cidade} onChange={e => handleChange("cidade", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-1.5">UF</label>
-                  <input
-                    type="text"
-                    placeholder="UF"
-                    value={formData.uf}
-                    onChange={e => handleChange("uf", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition"
-                  />
+                  <input type="text" placeholder="UF" value={formData.uf} onChange={e => handleChange("uf", e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition" />
                 </div>
               </div>
             </div>
@@ -412,24 +373,11 @@ const Checkout = () => {
               <Truck className="w-4 h-4 text-gray-600" />
               <span className="text-sm font-medium text-gray-900">Escolha uma forma de entrega:</span>
             </div>
-
             <div className="space-y-3">
               {shippingOptions.map((option) => (
-                <button
-                  key={option.id}
-                  onClick={() => setSelectedShipping(option.id)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition ${
-                    selectedShipping === option.id
-                      ? "border-[#2DB573] bg-[#F0FDF4]"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    selectedShipping === option.id ? "border-[#2DB573]" : "border-gray-300"
-                  }`}>
-                    {selectedShipping === option.id && (
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#2DB573]" />
-                    )}
+                <button key={option.id} onClick={() => setSelectedShipping(option.id)} className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition ${selectedShipping === option.id ? "border-[#2DB573] bg-[#F0FDF4]" : "border-gray-200 hover:border-gray-300"}`}>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedShipping === option.id ? "border-[#2DB573]" : "border-gray-300"}`}>
+                    {selectedShipping === option.id && <div className="w-2.5 h-2.5 rounded-full bg-[#2DB573]" />}
                   </div>
                   <img src={option.logo} alt={option.name} className="h-6 w-auto object-contain" />
                   <div className="flex-1 text-left">
@@ -443,7 +391,6 @@ const Checkout = () => {
               ))}
             </div>
           </div>
-
           <TrustBadges />
         </div>
 
@@ -451,20 +398,154 @@ const Checkout = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-500">Subtotal</p>
-              <p className="text-xl font-bold text-[#E63946]">
-                R$ {subtotal.toFixed(2).replace(".", ",")}
-              </p>
+              <p className="text-xl font-bold text-[#E63946]">R$ {((price * quantity) + shippingPrice).toFixed(2).replace(".", ",")}</p>
             </div>
-            <button
-              onClick={handleContinue}
-              disabled={!isStep2Valid}
-              className={`px-12 py-3.5 rounded-lg font-semibold text-base transition ${
-                isStep2Valid
-                  ? "bg-[#E63946] text-white hover:bg-[#D62B39]"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
-            >
+            <button onClick={handleContinue} disabled={!isStep2Valid} className={`px-12 py-3.5 rounded-lg font-semibold text-base transition ${isStep2Valid ? "bg-[#E63946] text-white hover:bg-[#D62B39]" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}>
               Continuar
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Step 3: Confirmation
+  if (step === 3) {
+    return (
+      <div className="min-h-screen bg-[#F8F8F8] flex flex-col">
+        <header className="bg-white px-4 py-3 flex items-center gap-3 border-b border-gray-100">
+          <button onClick={() => setStep(2)} className="p-1 -ml-1" aria-label="Voltar">
+            <ArrowLeft className="w-6 h-6 text-gray-700" strokeWidth={1.5} />
+          </button>
+          <h1 className="text-lg font-semibold text-gray-900">Confirmação</h1>
+        </header>
+
+        <div className="h-1 bg-[#E63946]" />
+
+        <div className="flex-1 overflow-auto pb-28">
+          {/* Itens do pedido */}
+          <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
+            <h2 className="text-sm font-semibold text-gray-900 mb-3">Itens do pedido</h2>
+            <div className="flex items-start gap-3">
+              <img src={mounjaroBox} alt="Mounjaro" className="w-16 h-16 object-contain rounded-lg bg-gray-50" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 leading-tight">Mounjaro™ 5 mg – Tirzepatida (caneta...</p>
+                <p className="text-base font-bold text-[#2DB573] mt-1">R$ {price.toFixed(2).replace(".", ",")}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="w-5 text-center font-medium text-gray-900">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Comprador - dados da etapa 1 */}
+          <button onClick={() => setStep(1)} className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm w-[calc(100%-2rem)] text-left flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900 mb-1">Comprador</h2>
+              <p className="text-sm text-gray-600">{formData.nome}</p>
+              <p className="text-sm text-gray-500">{formData.telefone}</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-gray-400" />
+          </button>
+
+          {/* Endereço de entrega - dados da etapa 2 */}
+          <button onClick={() => setStep(2)} className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm w-[calc(100%-2rem)] text-left flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900 mb-1">Endereço de entrega</h2>
+              <p className="text-sm text-gray-600">{formData.rua}, {formData.numero}</p>
+              <p className="text-sm text-gray-500">{formData.bairro} • {formData.cidade}, {formData.uf}</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-gray-400" />
+          </button>
+
+          {/* Forma de entrega - dados da etapa 2 */}
+          <button onClick={() => setStep(2)} className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm w-[calc(100%-2rem)] text-left flex items-center justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <h2 className="text-sm font-semibold text-gray-900">Forma de entrega</h2>
+              </div>
+              <p className="text-sm text-gray-600">{selectedShippingData?.name}</p>
+              <p className="text-sm text-gray-500">{selectedShippingData?.time}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-gray-700">
+                {shippingPrice === 0 ? "Grátis" : `R$ ${shippingPrice.toFixed(2).replace(".", ",")}`}
+              </span>
+              <ChevronRight className="w-5 h-5 text-gray-400" />
+            </div>
+          </button>
+
+          {/* Order Bumps */}
+          <div className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm">
+            <h2 className="text-base font-semibold text-[#E63946] mb-4">Adicione ao seu pedido</h2>
+            <div className="space-y-3">
+              {orderBumps.map((bump) => (
+                <button
+                  key={bump.id}
+                  onClick={() => toggleBump(bump.id)}
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition ${
+                    selectedBumps.includes(bump.id) ? "border-[#2DB573] bg-[#F0FDF4]" : "border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  <img src={bump.image} alt={bump.name} className="w-16 h-16 object-contain rounded-lg bg-gray-50" />
+                  <div className="flex-1 text-left min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-sm font-semibold text-gray-900">{bump.name}</p>
+                      {bump.badge && (
+                        <span className="text-[10px] font-bold text-[#2DB573] bg-[#E8F5E9] px-1.5 py-0.5 rounded">
+                          {bump.badge}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-0.5">{bump.description}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs text-gray-400 line-through">R$ {bump.oldPrice.toFixed(2).replace(".", ",")}</span>
+                      <span className="text-sm font-bold text-[#E63946]">R$ {bump.price.toFixed(2).replace(".", ",")}</span>
+                      <span className="text-[10px] font-bold text-[#2DB573] bg-[#E8F5E9] px-1.5 py-0.5 rounded">-{bump.discount}%</span>
+                    </div>
+                  </div>
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                    selectedBumps.includes(bump.id) ? "border-[#2DB573] bg-[#2DB573]" : "border-gray-300"
+                  }`}>
+                    {selectedBumps.includes(bump.id) && <Check className="w-4 h-4 text-white" />}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Forma de pagamento */}
+          <div className="bg-white mx-4 mt-3 rounded-xl p-4 shadow-sm">
+            <h2 className="text-sm font-semibold text-gray-900 mb-3">Forma de pagamento</h2>
+            <div className="flex items-center gap-3 p-3 rounded-xl border-2 border-[#2DB573] bg-[#F0FDF4]">
+              <img src={pixLogo} alt="PIX" className="h-8 w-auto object-contain" />
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-gray-900">Pix</p>
+                <p className="text-xs text-gray-500">Aprovação imediata</p>
+              </div>
+              <div className="w-6 h-6 rounded-full bg-[#2DB573] flex items-center justify-center">
+                <Check className="w-4 h-4 text-white" />
+              </div>
+            </div>
+          </div>
+
+          <TrustBadges />
+        </div>
+
+        <div className="fixed inset-x-0 bottom-0 bg-white border-t border-gray-200 px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-gray-500">Total</p>
+              <p className="text-xl font-bold text-[#E63946]">R$ {total.toFixed(2).replace(".", ",")}</p>
+            </div>
+            <button onClick={handlePay} className="px-16 py-3.5 rounded-lg font-semibold text-base bg-[#E63946] text-white hover:bg-[#D62B39] transition">
+              Pagar
             </button>
           </div>
         </div>
