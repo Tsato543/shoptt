@@ -26,6 +26,11 @@ serve(async (req) => {
       throw new Error('PARADISE_PUBLIC_KEY não configurada');
     }
 
+    const PARADISE_PRODUCT_HASH = Deno.env.get('PARADISE_PRODUCT_HASH');
+    if (!PARADISE_PRODUCT_HASH) {
+      throw new Error('PARADISE_PRODUCT_HASH não configurada');
+    }
+
     const body: PaymentRequest = await req.json();
     const { amount, customer_name, customer_email, customer_cpf, customer_phone, details } = body;
 
@@ -52,6 +57,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         public_key: PARADISE_PUBLIC_KEY,
+        product_hash: PARADISE_PRODUCT_HASH,
         amount: amount.toFixed(2),
         currency: 'BRL',
         identifier: identifier,
