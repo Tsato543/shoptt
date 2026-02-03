@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Copy, Loader2, ShieldCheck, Clock, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { trackCompletePayment, trackPageView } from "@/lib/tiktokPixel";
+import { trackCompletePayment, trackPageView, trackAddPaymentInfo, trackInitiateCheckout } from "@/lib/tiktokPixel";
 
 type PixState = {
   amountReais: number;
@@ -33,11 +33,20 @@ const PixPayment = () => {
   const [now, setNow] = useState(Date.now());
   const [copied, setCopied] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<'pending' | 'approved' | 'failed'>('pending');
+  const [hasTrackedPixEvents, setHasTrackedPixEvents] = useState(false);
 
-  // Track page view
+  // Track page view and PIX-specific events
   useEffect(() => {
     trackPageView();
-  }, []);
+    
+    // Track InitiateCheckout and AddPaymentInfo when QR code is shown
+    if (state?.amountReais && !hasTrackedPixEvents) {
+      trackInitiateCheckout('mounjaro-5mg', 'Mounjaro 5mg', state.amountReais);
+      trackAddPaymentInfo('mounjaro-5mg', 'Mounjaro 5mg', state.amountReais);
+      setHasTrackedPixEvents(true);
+      console.log('[TikTok Pixel] InitiateCheckout + AddPaymentInfo tracked on PIX page', { amount: state.amountReais });
+    }
+  }, [state?.amountReais, hasTrackedPixEvents]);
 
   // Timer
   useEffect(() => {
