@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import tiktokLogo from "@/assets/tiktok-shop.png";
 import PixModal from "@/components/PixModal";
 
@@ -15,6 +15,7 @@ interface CustomerData {
 
 const Upsell1 = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showPixModal, setShowPixModal] = useState(false);
   const [customerData, setCustomerData] = useState<CustomerData>({
     name: 'Cliente',
@@ -22,6 +23,15 @@ const Upsell1 = () => {
     cpf: '00000000000',
     phone: '00000000000',
   });
+
+  // Verifica se o usuário chegou aqui legitimamente (após pagamento aprovado)
+  useEffect(() => {
+    const paymentApproved = localStorage.getItem('checkoutPaymentApproved');
+    if (!paymentApproved) {
+      // Se não veio do pagamento aprovado, redireciona pro checkout
+      navigate('/checkout', { replace: true });
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const stored = localStorage.getItem('customerData');
@@ -37,6 +47,8 @@ const Upsell1 = () => {
 
   const handleSuccess = () => {
     setShowPixModal(false);
+    // Marca que o up1 foi pago
+    localStorage.setItem('up1PaymentApproved', 'true');
     navigate('/up2');
   };
 

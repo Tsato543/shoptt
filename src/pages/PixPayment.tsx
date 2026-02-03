@@ -52,6 +52,8 @@ const PixPayment = () => {
 
         if (!error && data?.success && data?.status === 'approved') {
           setPaymentStatus('approved');
+          // Marca no localStorage que o pagamento do checkout foi aprovado
+          localStorage.setItem('checkoutPaymentApproved', 'true');
           // Aguarda 2 segundos para mostrar feedback e redireciona
           setTimeout(() => {
             navigate('/up1');

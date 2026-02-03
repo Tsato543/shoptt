@@ -1,8 +1,28 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { CheckCircle, AlertTriangle, Clock, Gift, CircleCheck } from "lucide-react";
 import tiktokLogo from "@/assets/tiktok-shop.png";
 
 const Upsell5 = () => {
+  const navigate = useNavigate();
+
+  // Verifica se o usuário pagou o up4
+  useEffect(() => {
+    const up4Paid = localStorage.getItem('up4PaymentApproved');
+    if (!up4Paid) {
+      navigate('/checkout', { replace: true });
+    }
+  }, [navigate]);
+
   const handleClick = () => {
+    // Limpa todos os flags de pagamento ao finalizar
+    localStorage.removeItem('checkoutPaymentApproved');
+    localStorage.removeItem('up1PaymentApproved');
+    localStorage.removeItem('up2PaymentApproved');
+    localStorage.removeItem('up3PaymentApproved');
+    localStorage.removeItem('up4PaymentApproved');
+    localStorage.removeItem('customerData');
+    
     // Redireciona para link externo ou ação final
     window.open('https://www.tiktok.com', '_blank');
   };
