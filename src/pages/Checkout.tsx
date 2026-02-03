@@ -91,10 +91,6 @@ const Checkout = () => {
   const [selectedShipping, setSelectedShipping] = useState("");
   const [selectedBumps, setSelectedBumps] = useState<string[]>([]);
   const [pixLoading, setPixLoading] = useState(false);
-  const [showPixModal, setShowPixModal] = useState(false);
-  const [pixUrl, setPixUrl] = useState("");
-  const [pixCode, setPixCode] = useState("");
-  const [pixQrImageUrl, setPixQrImageUrl] = useState("");
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -227,13 +223,17 @@ const Checkout = () => {
         return;
       }
 
-      // Paradise (multi.paradisepags) retorna qr_code e qr_code_base64 (que na prática é uma URL da imagem)
+      // Paradise (multi.paradisepags) retorna qr_code e qr_code_base64 (na prática é uma URL da imagem)
       if (data?.success && (data?.qr_code || data?.qr_code_base64)) {
-        setPixCode(data?.qr_code || "");
-        setPixQrImageUrl(data?.qr_code_base64 || "");
-        // Mantém compatibilidade caso exista um link de checkout em alguma variante
-        setPixUrl(data?.checkout_url || "");
-        setShowPixModal(true);
+        navigate('/pix', {
+          state: {
+            amountReais: total,
+            quantityLabel: `${quantity} ${quantity === 1 ? 'item' : 'itens'}`,
+            qrCode: data?.qr_code || '',
+            qrImageUrl: data?.qr_code_base64 || '',
+            expiresAt: data?.expires_at || undefined,
+          },
+        });
       } else {
         alert(data?.error || 'Erro ao gerar PIX. Tente novamente.');
       }
@@ -749,97 +749,6 @@ const Checkout = () => {
           </div>
         </div>
 
-        {/* PIX Modal */}
-        {showPixModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-            <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-              <div className="flex items-center justify-between p-4 border-b border-gray-100">
-                <div className="flex items-center gap-2">
-                  <img src={pixLogo} alt="PIX" className="h-6 w-auto" />
-                  <h2 className="text-lg font-semibold text-gray-900">Pagamento PIX</h2>
-                </div>
-                <button 
-                  onClick={() => setShowPixModal(false)}
-                  className="p-1 rounded-full hover:bg-gray-100 transition-colors"
-                >
-                  <X className="w-5 h-5 text-gray-500" />
-                </button>
-              </div>
-              
-              <div className="p-6">
-                <p className="text-center text-gray-600 mb-4">
-                  Escaneie o QR Code no app do seu banco ou copie o código PIX.
-                </p>
-                
-                <div className="bg-gray-50 rounded-xl p-4 mb-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-500">Valor a pagar:</span>
-                    <span className="text-xl font-bold" style={{ color: PINK }}>
-                      R$ {total.toFixed(2).replace(".", ",")}
-                    </span>
-                  </div>
-                  <div className="text-xs text-gray-400 text-center">
-                    O PIX expira em 30 minutos
-                  </div>
-                </div>
-
-                {pixQrImageUrl ? (
-                  <div className="flex justify-center mb-5">
-                    <img
-                      src={pixQrImageUrl}
-                      alt="QR Code PIX"
-                      className="w-56 h-56 object-contain rounded-xl bg-white border border-gray-200"
-                      loading="lazy"
-                    />
-                  </div>
-                ) : null}
-
-                {pixCode ? (
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-900 mb-2">Código PIX (copia e cola)</label>
-                    <div className="flex gap-2">
-                      <input
-                        value={pixCode}
-                        readOnly
-                        className="flex-1 px-3 py-3 rounded-xl border border-gray-200 text-xs text-gray-700 bg-white"
-                      />
-                      <button
-                        onClick={async () => {
-                          try {
-                            await navigator.clipboard.writeText(pixCode);
-                            alert('Código PIX copiado!');
-                          } catch {
-                            alert('Não foi possível copiar automaticamente. Selecione e copie manualmente.');
-                          }
-                        }}
-                        className="px-4 py-3 rounded-xl font-semibold text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-                        style={{ backgroundColor: PINK }}
-                      >
-                        <Copy className="w-4 h-4" />
-                        Copiar
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
-
-                <button
-                  onClick={() => {
-                    if (pixUrl) window.open(pixUrl, '_blank');
-                  }}
-                  className="w-full py-4 rounded-xl font-semibold text-base text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-60"
-                  style={{ backgroundColor: PINK }}
-                  disabled={!pixUrl}
-                >
-                  Abrir Pagamento PIX
-                </button>
-
-                <p className="text-xs text-center text-gray-400 mt-4">
-                  Após o pagamento, a aprovação é imediata na maioria dos bancos.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     );
   }
