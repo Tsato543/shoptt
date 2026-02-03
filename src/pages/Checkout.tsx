@@ -93,6 +93,8 @@ const Checkout = () => {
   const [pixLoading, setPixLoading] = useState(false);
   const [showPixModal, setShowPixModal] = useState(false);
   const [pixUrl, setPixUrl] = useState("");
+  const [pixCode, setPixCode] = useState("");
+  const [pixQrImageUrl, setPixQrImageUrl] = useState("");
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -225,8 +227,12 @@ const Checkout = () => {
         return;
       }
 
-      if (data?.success && data?.checkout_url) {
-        setPixUrl(data.checkout_url);
+      // Paradise (multi.paradisepags) retorna qr_code e qr_code_base64 (que na prática é uma URL da imagem)
+      if (data?.success && (data?.qr_code || data?.qr_code_base64)) {
+        setPixCode(data?.qr_code || "");
+        setPixQrImageUrl(data?.qr_code_base64 || "");
+        // Mantém compatibilidade caso exista um link de checkout em alguma variante
+        setPixUrl(data?.checkout_url || "");
         setShowPixModal(true);
       } else {
         alert(data?.error || 'Erro ao gerar PIX. Tente novamente.');
@@ -762,7 +768,7 @@ const Checkout = () => {
               
               <div className="p-6">
                 <p className="text-center text-gray-600 mb-4">
-                  Você será redirecionado para a página de pagamento PIX.
+                  Escaneie o QR Code no app do seu banco ou copie o código PIX.
                 </p>
                 
                 <div className="bg-gray-50 rounded-xl p-4 mb-6">
@@ -777,18 +783,58 @@ const Checkout = () => {
                   </div>
                 </div>
 
+                {pixQrImageUrl ? (
+                  <div className="flex justify-center mb-5">
+                    <img
+                      src={pixQrImageUrl}
+                      alt="QR Code PIX"
+                      className="w-56 h-56 object-contain rounded-xl bg-white border border-gray-200"
+                      loading="lazy"
+                    />
+                  </div>
+                ) : null}
+
+                {pixCode ? (
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-900 mb-2">Código PIX (copia e cola)</label>
+                    <div className="flex gap-2">
+                      <input
+                        value={pixCode}
+                        readOnly
+                        className="flex-1 px-3 py-3 rounded-xl border border-gray-200 text-xs text-gray-700 bg-white"
+                      />
+                      <button
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(pixCode);
+                            alert('Código PIX copiado!');
+                          } catch {
+                            alert('Não foi possível copiar automaticamente. Selecione e copie manualmente.');
+                          }
+                        }}
+                        className="px-4 py-3 rounded-xl font-semibold text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                        style={{ backgroundColor: PINK }}
+                      >
+                        <Copy className="w-4 h-4" />
+                        Copiar
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+
                 <button
                   onClick={() => {
-                    window.open(pixUrl, '_blank');
+                    if (pixUrl) window.open(pixUrl, '_blank');
                   }}
-                  className="w-full py-4 rounded-xl font-semibold text-base text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-xl font-semibold text-base text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-60"
                   style={{ backgroundColor: PINK }}
+                  disabled={!pixUrl}
                 >
                   Abrir Pagamento PIX
                 </button>
 
                 <p className="text-xs text-center text-gray-400 mt-4">
-                  Após o pagamento, você será redirecionado automaticamente
+                  Após o pagamento, a aprovação é imediata na maioria dos bancos.
                 </p>
               </div>
             </div>
