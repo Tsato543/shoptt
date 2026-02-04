@@ -11,9 +11,9 @@ import pixLogo from "@/assets/checkout/pix-logo.png";
 import canetasExtras from "@/assets/checkout/canetas-extras.webp";
 import kitTransporte from "@/assets/checkout/kit-transporte.webp";
 import aulaAplicacao from "@/assets/checkout/aula-aplicacao.webp";
-import mounjaro75mg from "@/assets/checkout/mounjaro-7-5mg.jpg";
-import mounjaro10mg from "@/assets/checkout/mounjaro-10mg.jpg";
-import mounjaro125mg from "@/assets/checkout/mounjaro-12-5mg.jpg";
+import mounjaro75mg from "@/assets/checkout/mounjaro-7-5mg.png";
+import mounjaro10mg from "@/assets/checkout/mounjaro-10mg.png";
+import mounjaro125mg from "@/assets/checkout/mounjaro-12-5mg.png";
 import CheckoutPromoBanner from "@/components/CheckoutPromoBanner";
 
 interface AddressData {
@@ -38,9 +38,9 @@ const orderBumps = [
     id: "mounjaro-7-5mg", 
     name: "Mounjaro™ 7,5 mg", 
     description: "Controle de apetite eficiente e equilíbrio ideal para evolução constante nos resultados.",
-    oldPrice: 149.90,
-    price: 119.90, 
-    discount: 20,
+    oldPrice: 99.90,
+    price: 49.90, 
+    discount: 50,
     badge: "UPGRADE",
     image: mounjaro75mg 
   },
@@ -48,9 +48,9 @@ const orderBumps = [
     id: "mounjaro-10mg", 
     name: "Mounjaro™ 10 mg", 
     description: "Mais saciedade, mais foco na dieta e resultados visíveis no emagrecimento.",
-    oldPrice: 179.90,
-    price: 139.90, 
-    discount: 22,
+    oldPrice: 129.90,
+    price: 67.90, 
+    discount: 48,
     badge: "MAIS VENDIDO",
     image: mounjaro10mg 
   },
@@ -59,8 +59,8 @@ const orderBumps = [
     name: "Mounjaro™ 12,5 mg", 
     description: "Máxima potência para quem busca desempenho elevado e transformação acelerada.",
     oldPrice: 199.90,
-    price: 159.90, 
-    discount: 20,
+    price: 110.99, 
+    discount: 44,
     badge: "PREMIUM",
     image: mounjaro125mg 
   },
