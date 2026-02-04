@@ -300,7 +300,7 @@ const Checkout = () => {
                   <Minus className="w-4 h-4" />
                 </button>
                 <span className="w-5 text-center font-medium text-gray-900">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                <button onClick={() => setQuantity(Math.min(4, quantity + 1))} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
@@ -431,7 +431,7 @@ const Checkout = () => {
                   <Minus className="w-4 h-4" />
                 </button>
                 <span className="w-5 text-center font-medium text-gray-900">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                <button onClick={() => setQuantity(Math.min(4, quantity + 1))} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
@@ -629,7 +629,7 @@ const Checkout = () => {
                   <Minus className="w-4 h-4" />
                 </button>
                 <span className="w-5 text-center font-medium text-gray-900">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
+                <button onClick={() => setQuantity(Math.min(4, quantity + 1))} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50">
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
