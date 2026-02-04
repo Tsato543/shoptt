@@ -11,6 +11,7 @@ import pixLogo from "@/assets/checkout/pix-logo.png";
 import canetasExtras from "@/assets/checkout/canetas-extras.webp";
 import kitTransporte from "@/assets/checkout/kit-transporte.webp";
 import aulaAplicacao from "@/assets/checkout/aula-aplicacao.webp";
+import CheckoutPromoBanner from "@/components/CheckoutPromoBanner";
 
 interface AddressData {
   logradouro: string;
@@ -287,6 +288,9 @@ const Checkout = () => {
         </div>
 
         <div className="flex-1 overflow-auto pb-28">
+          {/* Promo Banner */}
+          <CheckoutPromoBanner />
+
           {/* Product Card */}
           <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
             <div className="flex items-start gap-3">
@@ -418,6 +422,9 @@ const Checkout = () => {
         </div>
 
         <div className="flex-1 overflow-auto pb-28">
+          {/* Promo Banner */}
+          <CheckoutPromoBanner />
+
           {/* Product Card */}
           <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
             <div className="flex items-start gap-3">
@@ -615,6 +622,9 @@ const Checkout = () => {
         <div className="h-1" style={{ backgroundColor: PINK }} />
 
         <div className="flex-1 overflow-auto pb-28">
+          {/* Promo Banner */}
+          <CheckoutPromoBanner />
+
           {/* Itens do pedido */}
           <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
             <h2 className="text-sm font-semibold text-gray-900 mb-3">Itens do pedido</h2>
