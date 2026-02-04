@@ -107,7 +107,7 @@ const Checkout = () => {
     uf: "",
   });
 
-  const price = 67.90;
+  const price = 99.90;
   const selectedShippingData = shippingOptions.find(s => s.id === selectedShipping);
   const shippingPrice = selectedShippingData?.price || 0;
   const bumpsTotal = orderBumps.filter(b => selectedBumps.includes(b.id)).reduce((sum, b) => sum + b.price, 0);
