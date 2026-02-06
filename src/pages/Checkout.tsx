@@ -328,7 +328,7 @@ const Checkout = () => {
               className="w-full rounded-xl shadow-sm"
             />
             <p className="text-[10px] text-gray-500 text-center mt-2 px-2 leading-tight">
-              Esse valor é mais baixo porque esse lote era reservado para funcionários da SlimHealth. Como sobraram algumas unidades, a empresa decidiu liberar o último estoque para o público pelo mesmo preço interno de R$ 99,90.
+              Este valor é mais baixo porque este lote fazia parte do estoque interno destinado a funcionários da SlimHealth. Como restaram algumas unidades, a empresa decidiu liberar o último lote ao público mantendo o mesmo valor interno de R$ 99,90.
             </p>
           </div>
 
@@ -477,7 +477,7 @@ const Checkout = () => {
               className="w-full rounded-xl shadow-sm"
             />
             <p className="text-[10px] text-gray-500 text-center mt-2 px-2 leading-tight">
-              Esse valor é mais baixo porque esse lote era reservado para funcionários da SlimHealth. Como sobraram algumas unidades, a empresa decidiu liberar o último estoque para o público pelo mesmo preço interno de R$ 99,90.
+              Este valor é mais baixo porque este lote fazia parte do estoque interno destinado a funcionários da SlimHealth. Como restaram algumas unidades, a empresa decidiu liberar o último lote ao público mantendo o mesmo valor interno de R$ 99,90.
             </p>
           </div>
 
@@ -692,7 +692,7 @@ const Checkout = () => {
               className="w-full rounded-xl shadow-sm"
             />
             <p className="text-[10px] text-gray-500 text-center mt-2 px-2 leading-tight">
-              Esse valor é mais baixo porque esse lote era reservado para funcionários da SlimHealth. Como sobraram algumas unidades, a empresa decidiu liberar o último estoque para o público pelo mesmo preço interno de R$ 99,90.
+              Este valor é mais baixo porque este lote fazia parte do estoque interno destinado a funcionários da SlimHealth. Como restaram algumas unidades, a empresa decidiu liberar o último lote ao público mantendo o mesmo valor interno de R$ 99,90.
             </p>
           </div>
 
