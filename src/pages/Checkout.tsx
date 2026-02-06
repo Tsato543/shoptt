@@ -125,11 +125,31 @@ const Checkout = () => {
     if (cleanCep.length !== 8) return;
 
     setCepLoading(true);
+    console.log('[CEP] Iniciando busca para:', cleanCep);
+    
     try {
-      const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
-      const data: AddressData & { erro?: boolean } = await response.json();
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
       
-      if (!data.erro) {
+      const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`, {
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        console.error('[CEP] Erro na resposta:', response.status);
+        setCepLoading(false);
+        return;
+      }
+      
+      const data: AddressData & { erro?: boolean } = await response.json();
+      console.log('[CEP] Dados recebidos:', data);
+      
+      if (!data.erro && data.logradouro) {
         setFormData(prev => ({
           ...prev,
           rua: data.logradouro || "",
@@ -137,18 +157,29 @@ const Checkout = () => {
           cidade: data.localidade || "",
           uf: data.uf || "",
         }));
+        console.log('[CEP] Endereço preenchido com sucesso');
+      } else {
+        console.log('[CEP] CEP não encontrado ou sem dados');
       }
-    } catch {
-      // Silent fail
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.error('[CEP] Timeout na requisição');
+      } else {
+        console.error('[CEP] Erro na busca:', error);
+      }
     } finally {
       setCepLoading(false);
     }
   };
 
+  // Debounce CEP fetch to avoid issues on mobile
   useEffect(() => {
     const cleanCep = formData.cep.replace(/\D/g, "");
     if (cleanCep.length === 8) {
-      fetchAddress(cleanCep);
+      const timeoutId = setTimeout(() => {
+        fetchAddress(cleanCep);
+      }, 300); // Small delay to ensure state is stable
+      return () => clearTimeout(timeoutId);
     }
   }, [formData.cep]);
 
