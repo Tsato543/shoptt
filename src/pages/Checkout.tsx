@@ -13,6 +13,7 @@ import kitTransporte from "@/assets/checkout/kit-transporte.webp";
 import aulaAplicacao from "@/assets/checkout/aula-aplicacao.webp";
 import anvisaLogo from "@/assets/checkout/anvisa-logo.png";
 import govbrLogo from "@/assets/checkout/govbr-logo.png";
+import promoBanner from "@/assets/checkout/promo-banner-new.jpg";
 
 interface AddressData {
   logradouro: string;
@@ -319,6 +320,18 @@ const Checkout = () => {
         </div>
 
         <div className="flex-1 overflow-auto pb-28">
+          {/* Promo Banner */}
+          <div className="mx-4 mt-4">
+            <img 
+              src={promoBanner} 
+              alt="Estoque interno de funcionários liberado ao público - R$ 99,90" 
+              className="w-full rounded-xl shadow-sm"
+            />
+            <p className="text-[10px] text-gray-500 text-center mt-2 px-2 leading-tight">
+              Esse valor é mais baixo porque esse lote era reservado para funcionários da SlimHealth. Como sobraram algumas unidades, a empresa decidiu liberar o último estoque para o público pelo mesmo preço interno de R$ 99,90.
+            </p>
+          </div>
+
           {/* Product Card */}
           <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
             <div className="flex items-start gap-3">
@@ -456,6 +469,18 @@ const Checkout = () => {
         </div>
 
         <div className="flex-1 overflow-auto pb-28">
+          {/* Promo Banner */}
+          <div className="mx-4 mt-4">
+            <img 
+              src={promoBanner} 
+              alt="Estoque interno de funcionários liberado ao público - R$ 99,90" 
+              className="w-full rounded-xl shadow-sm"
+            />
+            <p className="text-[10px] text-gray-500 text-center mt-2 px-2 leading-tight">
+              Esse valor é mais baixo porque esse lote era reservado para funcionários da SlimHealth. Como sobraram algumas unidades, a empresa decidiu liberar o último estoque para o público pelo mesmo preço interno de R$ 99,90.
+            </p>
+          </div>
+
           {/* Product Card */}
           <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
             <div className="flex items-start gap-3">
@@ -659,6 +684,18 @@ const Checkout = () => {
         <div className="h-1" style={{ backgroundColor: PINK }} />
 
         <div className="flex-1 overflow-auto pb-28">
+          {/* Promo Banner */}
+          <div className="mx-4 mt-4">
+            <img 
+              src={promoBanner} 
+              alt="Estoque interno de funcionários liberado ao público - R$ 99,90" 
+              className="w-full rounded-xl shadow-sm"
+            />
+            <p className="text-[10px] text-gray-500 text-center mt-2 px-2 leading-tight">
+              Esse valor é mais baixo porque esse lote era reservado para funcionários da SlimHealth. Como sobraram algumas unidades, a empresa decidiu liberar o último estoque para o público pelo mesmo preço interno de R$ 99,90.
+            </p>
+          </div>
+
           {/* Itens do pedido */}
           <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
             <h2 className="text-sm font-semibold text-gray-900 mb-3">Itens do pedido</h2>
