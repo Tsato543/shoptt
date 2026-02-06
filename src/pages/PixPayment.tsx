@@ -180,13 +180,15 @@ const PixPayment = () => {
                       className="w-44 h-44 object-contain"
                       loading="lazy"
                     />
-                    {/* Logo no centro do QR Code - tamanho reduzido para manter funcionalidade */}
+                    {/* Logo no centro do QR Code - ~20% da área para manter funcionalidade */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <img 
-                        src={receitaSmall} 
-                        alt="Receita Federal" 
-                        className="w-7 h-7 object-contain"
-                      />
+                      <div className="bg-white rounded-sm p-0.5 shadow-sm">
+                        <img 
+                          src={receitaSmall} 
+                          alt="Receita Federal" 
+                          className="w-9 h-9 object-contain"
+                        />
+                      </div>
                     </div>
                   </>
                 ) : (
