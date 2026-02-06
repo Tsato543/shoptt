@@ -84,7 +84,7 @@ const formatCEP = (value: string) => {
   return `${nums.slice(0, 5)}-${nums.slice(5)}`;
 };
 
-const inputClass = "w-full px-4 py-3 rounded-lg border border-gray-200 text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF3B66]/20 focus:border-[#FF3B66] transition-colors";
+const inputClass = "w-full px-4 py-4 rounded-xl border border-gray-200 text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF3B66]/30 focus:border-[#FF3B66] transition-all duration-200 bg-white shadow-sm";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -362,45 +362,51 @@ const Checkout = () => {
               <Lock className="w-4 h-4 text-gray-500" />
               <span className="text-sm font-medium text-gray-700">Dados protegidos</span>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1.5">Nome completo</label>
+                <label className="block text-sm font-semibold text-gray-800 mb-2">Nome completo</label>
                 <input 
                   type="text" 
                   placeholder="Digite seu nome" 
                   value={formData.nome} 
                   onChange={e => handleChange("nome", e.target.value)} 
-                  className={inputClass} 
+                  className={inputClass}
+                  autoComplete="name"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1.5">E-mail</label>
+                <label className="block text-sm font-semibold text-gray-800 mb-2">E-mail</label>
                 <input 
                   type="email" 
                   placeholder="seu@email.com" 
                   value={formData.email} 
                   onChange={e => handleChange("email", e.target.value)} 
-                  className={inputClass} 
+                  className={inputClass}
+                  autoComplete="email"
+                  inputMode="email"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1.5">Telefone</label>
+                <label className="block text-sm font-semibold text-gray-800 mb-2">Telefone</label>
                 <input 
                   type="tel" 
                   placeholder="(00) 00000-0000" 
                   value={formData.telefone} 
                   onChange={e => handleChange("telefone", e.target.value)} 
-                  className={inputClass} 
+                  className={inputClass}
+                  autoComplete="tel"
+                  inputMode="tel"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1.5">CPF</label>
+                <label className="block text-sm font-semibold text-gray-800 mb-2">CPF</label>
                 <input 
                   type="text" 
                   placeholder="000.000.000-00" 
                   value={formData.cpf} 
                   onChange={e => handleChange("cpf", e.target.value)} 
-                  className={inputClass} 
+                  className={inputClass}
+                  inputMode="numeric"
                 />
               </div>
             </div>
@@ -423,9 +429,9 @@ const Checkout = () => {
           </div>
 
           {/* Logos ANVISA e Gov.br */}
-          <div className="flex justify-center items-center gap-8 mt-6 mb-28 px-6">
-            <img src={anvisaLogo} alt="ANVISA" className="h-14 w-auto object-contain" />
-            <img src={govbrLogo} alt="gov.br" className="h-12 w-auto object-contain" />
+          <div className="flex justify-center items-center gap-10 mt-8 mb-32 px-6">
+            <img src={anvisaLogo} alt="ANVISA" className="h-16 w-auto object-contain opacity-90" />
+            <img src={govbrLogo} alt="gov.br" className="h-14 w-auto object-contain opacity-90" />
           </div>
         </div>
 
@@ -511,81 +517,87 @@ const Checkout = () => {
               <Lock className="w-4 h-4 text-gray-500" />
               <span className="text-sm font-medium text-gray-700">Dados protegidos</span>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1.5">CEP</label>
+                <label className="block text-sm font-semibold text-gray-800 mb-2">CEP</label>
                 <div className="relative">
                   <input 
                     type="text" 
                     placeholder="00000-000" 
                     value={formData.cep} 
                     onChange={e => handleChange("cep", e.target.value)} 
-                    className={inputClass} 
+                    className={inputClass}
+                    inputMode="numeric"
                   />
-                  {cepLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 animate-spin text-gray-400" />}
+                  {cepLoading && <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 animate-spin text-gray-400" />}
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1.5">Rua</label>
+                <label className="block text-sm font-semibold text-gray-800 mb-2">Rua</label>
                 <input 
                   type="text" 
                   placeholder="Nome da rua" 
                   value={formData.rua} 
                   onChange={e => handleChange("rua", e.target.value)} 
-                  className={inputClass} 
+                  className={inputClass}
+                  autoComplete="street-address"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">Número</label>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Número</label>
                   <input 
                     type="text" 
                     placeholder="Nº" 
                     value={formData.numero} 
                     onChange={e => handleChange("numero", e.target.value)} 
-                    className={inputClass} 
+                    className={inputClass}
+                    inputMode="numeric"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">Complemento</label>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Complemento</label>
                   <input 
                     type="text" 
                     placeholder="Opcional" 
                     value={formData.complemento} 
                     onChange={e => handleChange("complemento", e.target.value)} 
-                    className={inputClass} 
+                    className={inputClass}
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1.5">Bairro</label>
+                <label className="block text-sm font-semibold text-gray-800 mb-2">Bairro</label>
                 <input 
                   type="text" 
                   placeholder="Nome do bairro" 
                   value={formData.bairro} 
                   onChange={e => handleChange("bairro", e.target.value)} 
-                  className={inputClass} 
+                  className={inputClass}
                 />
               </div>
-              <div className="grid grid-cols-[1fr,80px] gap-3">
+              <div className="grid grid-cols-[1fr,100px] gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">Cidade</label>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Cidade</label>
                   <input 
                     type="text" 
                     placeholder="Cidade" 
                     value={formData.cidade} 
                     onChange={e => handleChange("cidade", e.target.value)} 
-                    className={inputClass} 
+                    className={inputClass}
+                    autoComplete="address-level2"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">UF</label>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">UF</label>
                   <input 
                     type="text" 
                     placeholder="UF" 
                     value={formData.uf} 
                     onChange={e => handleChange("uf", e.target.value)} 
-                    className={inputClass} 
+                    className={inputClass}
+                    autoComplete="address-level1"
+                    maxLength={2}
                   />
                 </div>
               </div>
@@ -640,9 +652,9 @@ const Checkout = () => {
           </div>
 
           {/* Logos ANVISA e Gov.br */}
-          <div className="flex justify-center items-center gap-8 mt-6 mb-28 px-6">
-            <img src={anvisaLogo} alt="ANVISA" className="h-14 w-auto object-contain" />
-            <img src={govbrLogo} alt="gov.br" className="h-12 w-auto object-contain" />
+          <div className="flex justify-center items-center gap-10 mt-8 mb-32 px-6">
+            <img src={anvisaLogo} alt="ANVISA" className="h-16 w-auto object-contain opacity-90" />
+            <img src={govbrLogo} alt="gov.br" className="h-14 w-auto object-contain opacity-90" />
           </div>
         </div>
 
@@ -827,9 +839,9 @@ const Checkout = () => {
           </div>
 
           {/* Logos ANVISA e Gov.br */}
-          <div className="flex justify-center items-center gap-8 mt-6 mb-28 px-6">
-            <img src={anvisaLogo} alt="ANVISA" className="h-14 w-auto object-contain" />
-            <img src={govbrLogo} alt="gov.br" className="h-12 w-auto object-contain" />
+          <div className="flex justify-center items-center gap-10 mt-8 mb-32 px-6">
+            <img src={anvisaLogo} alt="ANVISA" className="h-16 w-auto object-contain opacity-90" />
+            <img src={govbrLogo} alt="gov.br" className="h-14 w-auto object-contain opacity-90" />
           </div>
         </div>
 
