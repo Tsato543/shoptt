@@ -6,6 +6,7 @@ import { trackCompletePayment, trackPageView, trackAddPaymentInfo, trackInitiate
 import govbrLogo from "@/assets/pix/govbr-logo.png";
 import receitaLogo from "@/assets/pix/receita-federal-logo.png";
 import bacenLogo from "@/assets/pix/bacen-logo.png";
+import receitaSmall from "@/assets/pix/receita-federal-small.png";
 
 type PixState = {
   amountReais: number;
@@ -170,14 +171,26 @@ const PixPayment = () => {
             </p>
 
             <div className="flex justify-center mt-4">
-              <div className="rounded-xl p-3 border border-gray-100 bg-white shadow-sm">
+              <div className="rounded-xl p-3 border border-gray-100 bg-white shadow-sm relative">
                 {state.qrImageUrl ? (
-                  <img
-                    src={state.qrImageUrl}
-                    alt="QR Code do PIX"
-                    className="w-44 h-44 object-contain"
-                    loading="lazy"
-                  />
+                  <>
+                    <img
+                      src={state.qrImageUrl}
+                      alt="QR Code do PIX"
+                      className="w-44 h-44 object-contain"
+                      loading="lazy"
+                    />
+                    {/* Logo no centro do QR Code */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="bg-white p-1 rounded">
+                        <img 
+                          src={receitaSmall} 
+                          alt="Receita Federal" 
+                          className="w-10 h-10 object-contain"
+                        />
+                      </div>
+                    </div>
+                  </>
                 ) : (
                   <div className="w-44 h-44 flex items-center justify-center text-gray-300">
                     <Loader2 className="w-8 h-8 animate-spin" />
