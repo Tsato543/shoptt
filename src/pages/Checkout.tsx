@@ -11,6 +11,8 @@ import pixLogo from "@/assets/checkout/pix-logo.png";
 import canetasExtras from "@/assets/checkout/canetas-extras.webp";
 import kitTransporte from "@/assets/checkout/kit-transporte.webp";
 import aulaAplicacao from "@/assets/checkout/aula-aplicacao.webp";
+import anvisaLogo from "@/assets/checkout/anvisa-logo.png";
+import govbrLogo from "@/assets/checkout/govbr-logo.png";
 import CheckoutPromoBanner from "@/components/CheckoutPromoBanner";
 
 interface AddressData {
@@ -783,6 +785,12 @@ const Checkout = () => {
               <ShieldCheck className="w-4 h-4 text-[#2DB573]" />
               <span className="text-xs font-medium">Garantia</span>
             </div>
+          </div>
+
+          {/* Logos ANVISA e Gov.br */}
+          <div className="flex justify-center items-center gap-6 mt-4 mb-24 px-4">
+            <img src={anvisaLogo} alt="ANVISA" className="h-10 object-contain" />
+            <img src={govbrLogo} alt="gov.br" className="h-8 object-contain" />
           </div>
         </div>
 
