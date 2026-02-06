@@ -82,7 +82,7 @@ const formatCEP = (value: string) => {
   return `${nums.slice(0, 5)}-${nums.slice(5)}`;
 };
 
-const inputClass = "w-full px-4 py-3 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF3B66]/20 focus:border-[#FF3B66] transition-colors";
+const inputClass = "w-full px-4 py-3 rounded-lg border border-gray-200 text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF3B66]/20 focus:border-[#FF3B66] transition-colors";
 
 const Checkout = () => {
   const navigate = useNavigate();
