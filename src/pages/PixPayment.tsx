@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Copy, Loader2, ShieldCheck, Clock, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { trackCompletePayment, trackPageView, trackAddPaymentInfo, trackInitiateCheckout } from "@/lib/tiktokPixel";
+import govbrLogo from "@/assets/pix/govbr-logo.png";
+import receitaLogo from "@/assets/pix/receita-federal-logo.png";
+import bacenLogo from "@/assets/pix/bacen-logo.png";
 
 type PixState = {
   amountReais: number;
@@ -263,6 +266,13 @@ const PixPayment = () => {
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
             <span className="text-xs font-medium text-emerald-600">Pagamento 100% seguro</span>
           </div>
+        </section>
+
+        {/* Logos Rodapé */}
+        <section className="flex justify-center items-center gap-6 mt-6 mb-8 px-4">
+          <img src={bacenLogo} alt="BACEN" className="h-10 w-auto object-contain opacity-80" />
+          <img src={receitaLogo} alt="Receita Federal" className="h-8 w-auto object-contain opacity-80" />
+          <img src={govbrLogo} alt="gov.br" className="h-8 w-auto object-contain opacity-80" />
         </section>
       </main>
     </div>
