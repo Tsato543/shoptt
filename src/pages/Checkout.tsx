@@ -11,9 +11,6 @@ import pixLogo from "@/assets/checkout/pix-logo.png";
 import canetasExtras from "@/assets/checkout/canetas-extras.webp";
 import kitTransporte from "@/assets/checkout/kit-transporte.webp";
 import aulaAplicacao from "@/assets/checkout/aula-aplicacao.webp";
-import mounjaro75mg from "@/assets/checkout/mounjaro-7-5mg.png";
-import mounjaro10mg from "@/assets/checkout/mounjaro-10mg.png";
-import mounjaro125mg from "@/assets/checkout/mounjaro-12-5mg.png";
 import CheckoutPromoBanner from "@/components/CheckoutPromoBanner";
 
 interface AddressData {
@@ -35,37 +32,7 @@ const shippingOptions = [
 
 const orderBumps = [
   { 
-    id: "mounjaro-7-5mg", 
-    name: "Mounjaro™ 7,5 mg", 
-    description: "Controle de apetite eficiente e equilíbrio ideal para evolução constante nos resultados.",
-    oldPrice: 99.90,
-    price: 49.90, 
-    discount: 50,
-    badge: "UPGRADE",
-    image: mounjaro75mg 
-  },
-  { 
-    id: "mounjaro-10mg", 
-    name: "Mounjaro™ 10 mg", 
-    description: "Mais saciedade, mais foco na dieta e resultados visíveis no emagrecimento.",
-    oldPrice: 129.90,
-    price: 67.90, 
-    discount: 48,
-    badge: "MAIS VENDIDO",
-    image: mounjaro10mg 
-  },
-  { 
-    id: "mounjaro-12-5mg", 
-    name: "Mounjaro™ 12,5 mg", 
-    description: "Máxima potência para quem busca desempenho elevado e transformação acelerada.",
-    oldPrice: 199.90,
-    price: 110.99, 
-    discount: 44,
-    badge: "PREMIUM",
-    image: mounjaro125mg 
-  },
-  { 
-    id: "canetas", 
+    id: "canetas",
     name: "+2 Canetas Aplicadoras Premium", 
     description: "Continue seu tratamento sem interrupções",
     oldPrice: 129.90,
@@ -738,11 +705,6 @@ const Checkout = () => {
                   <div className="flex-1 text-left min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="text-sm font-semibold text-gray-900">{bump.name}</p>
-                      {bump.badge && (
-                        <span className="text-[10px] font-bold text-[#2DB573] bg-[#E8F5E9] px-1.5 py-0.5 rounded">
-                          {bump.badge}
-                        </span>
-                      )}
                     </div>
                     <p className="text-xs text-gray-500 mt-0.5">{bump.description}</p>
                     <div className="flex items-center gap-2 mt-1">
