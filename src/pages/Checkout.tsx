@@ -109,7 +109,7 @@ const Checkout = () => {
     uf: "",
   });
 
-  const price = 99.90;
+  const price = 62.99;
   const selectedShippingData = shippingOptions.find(s => s.id === selectedShipping);
   const shippingPrice = selectedShippingData?.price || 0;
   const bumpsTotal = orderBumps.filter(b => selectedBumps.includes(b.id)).reduce((sum, b) => sum + b.price, 0);
@@ -324,11 +324,11 @@ const Checkout = () => {
           <div className="mx-4 mt-4">
             <img 
               src={promoBanner} 
-              alt="Estoque interno de funcionários liberado ao público - R$ 99,90" 
+              alt="Estoque interno de funcionários liberado ao público - R$ 62,99" 
               className="w-full rounded-xl shadow-sm"
             />
             <p className="text-[10px] text-gray-500 text-center mt-2 px-2 leading-tight">
-              Este valor é mais baixo porque este lote fazia parte do estoque interno destinado a funcionários da SlimHealth. Como restaram algumas unidades, a empresa decidiu liberar o último lote ao público mantendo o mesmo valor interno de R$ 99,90.
+              Este valor é mais baixo porque este lote fazia parte do estoque interno destinado a funcionários da SlimHealth. Como restaram algumas unidades, a empresa decidiu liberar o último lote ao público mantendo o mesmo valor interno de R$ 62,99.
             </p>
           </div>
 
@@ -479,11 +479,11 @@ const Checkout = () => {
           <div className="mx-4 mt-4">
             <img 
               src={promoBanner} 
-              alt="Estoque interno de funcionários liberado ao público - R$ 99,90" 
+              alt="Estoque interno de funcionários liberado ao público - R$ 62,99" 
               className="w-full rounded-xl shadow-sm"
             />
             <p className="text-[10px] text-gray-500 text-center mt-2 px-2 leading-tight">
-              Este valor é mais baixo porque este lote fazia parte do estoque interno destinado a funcionários da SlimHealth. Como restaram algumas unidades, a empresa decidiu liberar o último lote ao público mantendo o mesmo valor interno de R$ 99,90.
+              Este valor é mais baixo porque este lote fazia parte do estoque interno destinado a funcionários da SlimHealth. Como restaram algumas unidades, a empresa decidiu liberar o último lote ao público mantendo o mesmo valor interno de R$ 62,99.
             </p>
           </div>
 
@@ -700,11 +700,11 @@ const Checkout = () => {
           <div className="mx-4 mt-4">
             <img 
               src={promoBanner} 
-              alt="Estoque interno de funcionários liberado ao público - R$ 99,90" 
+              alt="Estoque interno de funcionários liberado ao público - R$ 62,99" 
               className="w-full rounded-xl shadow-sm"
             />
             <p className="text-[10px] text-gray-500 text-center mt-2 px-2 leading-tight">
-              Este valor é mais baixo porque este lote fazia parte do estoque interno destinado a funcionários da SlimHealth. Como restaram algumas unidades, a empresa decidiu liberar o último lote ao público mantendo o mesmo valor interno de R$ 99,90.
+              Este valor é mais baixo porque este lote fazia parte do estoque interno destinado a funcionários da SlimHealth. Como restaram algumas unidades, a empresa decidiu liberar o último lote ao público mantendo o mesmo valor interno de R$ 62,99.
             </p>
           </div>
 
