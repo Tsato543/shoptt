@@ -432,8 +432,8 @@ const Checkout = () => {
 
           {/* Logos ANVISA e Gov.br */}
           <div className="flex justify-center items-center gap-10 mt-8 mb-32 px-6">
-            <img src={anvisaLogo} alt="ANVISA" className="h-16 w-auto object-contain opacity-90" />
-            <img src={govbrLogo} alt="gov.br" className="h-14 w-auto object-contain opacity-90" />
+            <img src={anvisaLogo} alt="ANVISA" className="h-28 w-auto object-contain opacity-90" />
+            <img src={govbrLogo} alt="gov.br" className="h-24 w-auto object-contain opacity-90" />
           </div>
         </div>
 
@@ -655,8 +655,8 @@ const Checkout = () => {
 
           {/* Logos ANVISA e Gov.br */}
           <div className="flex justify-center items-center gap-10 mt-8 mb-32 px-6">
-            <img src={anvisaLogo} alt="ANVISA" className="h-16 w-auto object-contain opacity-90" />
-            <img src={govbrLogo} alt="gov.br" className="h-14 w-auto object-contain opacity-90" />
+            <img src={anvisaLogo} alt="ANVISA" className="h-28 w-auto object-contain opacity-90" />
+            <img src={govbrLogo} alt="gov.br" className="h-24 w-auto object-contain opacity-90" />
           </div>
         </div>
 
@@ -842,8 +842,8 @@ const Checkout = () => {
 
           {/* Logos ANVISA e Gov.br */}
           <div className="flex justify-center items-center gap-10 mt-8 mb-32 px-6">
-            <img src={anvisaLogo} alt="ANVISA" className="h-16 w-auto object-contain opacity-90" />
-            <img src={govbrLogo} alt="gov.br" className="h-14 w-auto object-contain opacity-90" />
+            <img src={anvisaLogo} alt="ANVISA" className="h-28 w-auto object-contain opacity-90" />
+            <img src={govbrLogo} alt="gov.br" className="h-24 w-auto object-contain opacity-90" />
           </div>
         </div>
 
