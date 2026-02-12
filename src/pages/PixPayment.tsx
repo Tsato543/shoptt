@@ -282,10 +282,10 @@ const PixPayment = () => {
         </section>
 
         {/* Logos Rodapé */}
-        <section className="flex justify-center items-center gap-6 mt-6 mb-8 px-4">
-          <img src={bacenLogo} alt="BACEN" className="h-10 w-auto object-contain opacity-80" />
-          <img src={receitaLogo} alt="Receita Federal" className="h-8 w-auto object-contain opacity-80" />
-          <img src={govbrLogo} alt="gov.br" className="h-8 w-auto object-contain opacity-80" />
+        <section className="flex justify-center items-center gap-10 mt-8 mb-10 px-4">
+          <img src={bacenLogo} alt="BACEN" className="h-20 w-auto object-contain opacity-90" />
+          <img src={receitaLogo} alt="Receita Federal" className="h-16 w-auto object-contain opacity-90" />
+          <img src={govbrLogo} alt="gov.br" className="h-16 w-auto object-contain opacity-90" />
         </section>
       </main>
     </div>
