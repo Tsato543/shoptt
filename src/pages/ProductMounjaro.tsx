@@ -35,7 +35,7 @@ const ProductMounjaro = () => {
   // Track ViewContent on mount - using actual checkout price
   useEffect(() => {
     trackPageView();
-    trackViewContent('mounjaro-5mg', 'Mounjaro™️ 5 mg — Caneta injetável', 62.99);
+    trackViewContent('mounjaro-5mg', 'Mounjaro™️ 5 mg — Caneta injetável', 67.90);
   }, []);
 
   // Countdown timer
@@ -189,7 +189,7 @@ const ProductMounjaro = () => {
               <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-white/90 text-primary px-1.5 py-[2px] rounded-md">
                 -96%
               </span>
-              <span className="text-[22px] font-extrabold leading-none">R$ 62,99</span>
+              <span className="text-[22px] font-extrabold leading-none">R$ 67,90</span>
             </div>
             <div className="mt-1 text-[12px] text-white/70 line-through">R$ 1.789,87</div>
           </div>
