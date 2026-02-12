@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { X, Copy, Clock, Loader2, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { trackCompletePayment } from "@/lib/tiktokPixel";
+import { getTrackingParams } from "@/lib/trackingParams";
 import tiktokLogo from "@/assets/tiktok-shop-logo.png";
 
 interface PixModalProps {
@@ -71,6 +72,7 @@ const PixModal = ({
             customer_cpf: customerCpf.replace(/\D/g, ''),
             customer_phone: customerPhone.replace(/\D/g, ''),
             details,
+            tracking: getTrackingParams(),
           },
         });
 

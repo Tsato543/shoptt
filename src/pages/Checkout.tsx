@@ -14,6 +14,7 @@ import aulaAplicacao from "@/assets/checkout/aula-aplicacao.webp";
 import anvisaLogo from "@/assets/checkout/anvisa-logo.png";
 import govbrLogo from "@/assets/checkout/govbr-logo.png";
 import promoBanner from "@/assets/checkout/promo-banner-new.jpg";
+import { getTrackingParams } from "@/lib/trackingParams";
 
 interface AddressData {
   logradouro: string;
@@ -272,6 +273,7 @@ const Checkout = () => {
           customer_phone: formData.telefone.replace(/\D/g, ''),
           details: `Mounjaro 5mg x${quantity}${selectedBumps.length > 0 ? ' + ' + selectedBumps.length + ' adicionais' : ''}`,
           identifier,
+          tracking: getTrackingParams(),
         },
       });
 

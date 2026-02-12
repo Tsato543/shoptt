@@ -12,6 +12,7 @@ interface PaymentRequest {
   customer_cpf: string;
   customer_phone: string;
   details: string;
+  tracking?: Record<string, string>;
 }
 
 serve(async (req) => {
@@ -33,7 +34,7 @@ serve(async (req) => {
     }
 
     const body: PaymentRequest = await req.json();
-    const { amount, customer_name, customer_email, customer_cpf, customer_phone, details } = body;
+    const { amount, customer_name, customer_email, customer_cpf, customer_phone, details, tracking } = body;
 
     // Validações básicas
     if (!amount || amount <= 0) {
@@ -54,7 +55,8 @@ serve(async (req) => {
       customer_name, 
       customer_email, 
       reference,
-      productHash: PARADISE_PRODUCT_HASH 
+      productHash: PARADISE_PRODUCT_HASH,
+      tracking,
     });
 
     // Chamada à API da Paradise - URL e formato corretos conforme documentação
@@ -72,9 +74,11 @@ serve(async (req) => {
         customer: {
           name: customer_name,
           email: customer_email,
-          document: customer_cpf.replace(/\D/g, ''), // Remove formatação, só números
-          phone: customer_phone.replace(/\D/g, ''),  // Remove formatação, só números
+          document: customer_cpf.replace(/\D/g, ''),
+          phone: customer_phone.replace(/\D/g, ''),
         },
+        // Forward all TikTok / UTM tracking params
+        ...(tracking && Object.keys(tracking).length > 0 ? { metadata: tracking } : {}),
       }),
     });
 
