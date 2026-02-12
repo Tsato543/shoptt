@@ -77,8 +77,8 @@ serve(async (req) => {
           document: customer_cpf.replace(/\D/g, ''),
           phone: customer_phone.replace(/\D/g, ''),
         },
-        // Forward all TikTok / UTM tracking params
-        ...(tracking && Object.keys(tracking).length > 0 ? { metadata: tracking } : {}),
+        // Forward all TikTok / UTM tracking params via the 'tracking' field (Paradise docs)
+        ...(tracking && Object.keys(tracking).length > 0 ? { tracking } : {}),
       }),
     });
 
