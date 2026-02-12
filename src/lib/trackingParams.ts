@@ -5,7 +5,7 @@ const TRACKED_PARAMS = [
   'ttclid', 'adid', 'adname', 'adset', 'cname', 'domain',
   'placement', 'search', 'site', 'type', 'cck', 'tiktok_clid',
   'xgo', 'utm_source', 'utm_campaign', 'utm_medium', 'utm_content',
-  'utm_term', 'utm_id',
+  'utm_term', 'utm_id', 'src', 'sck',
 ];
 
 /** Call once on app init – grabs tracking query-params from the URL and persists them. */
